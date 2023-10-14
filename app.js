@@ -25,6 +25,7 @@ npm install @firebase/storage
 */
 
 const app = express();
+app.use(express.static("public"));
 
 const firebaseConfig = {
   apiKey: "YOUR_API_KEY",
@@ -139,7 +140,11 @@ function deleteFileStorage(path) {
 app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
-  //   res.render("home");
+  res.render("home");
+});
+
+app.get("/about", (req, res) => {
+  res.render("about");
 });
 
 app.listen(2023, function () {
