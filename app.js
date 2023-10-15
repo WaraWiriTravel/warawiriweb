@@ -1,8 +1,9 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const firebase = require("firebase");
-const { initializeFirestore } = require("@firebase/firestore");
-const { getStorage, ref } = require("@firebase/storage");
+const { initializeApp } = require('firebase/app');
+const { getFirestore } = require('firebase/firestore');
+const { getStorage, ref } = require('firebase/storage');
+
 /*
 pindahin ke firebaseFunction.js
 const {
@@ -16,9 +17,7 @@ const {
   createFileStorage,
   deleteFileStorage,
 } = require("./firebaseFunctions");
-*/
 
-/*
 npm install firebase
 npm install @firebase/firestore
 npm install @firebase/storage
@@ -28,18 +27,17 @@ const app = express();
 app.use(express.static("public"));
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  databaseURL: "YOUR_DATABASE_URL",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID",
+  apiKey: "AIzaSyDe2PJ7aGcAREEmOLKeGQNAKucbGkl62ss",
+  authDomain: "inventarisgudangdci.firebaseapp.com",
+  projectId: "inventarisgudangdci",
+  storageBucket: "inventarisgudangdci.appspot.com",
+  messagingSenderId: "844624800675",
+  appId: "1:844624800675:web:8374b2378bc234f2d5c816"
 };
 
-firebase.initializeApp(firebaseConfig);
-const firestore = initializeFirestore(firebase.app());
-const storage = getStorage(firebase.app());
+const firebase = initializeApp(firebaseConfig);
+const firestore = getFirestore(firebase);
+const storage = getStorage();
 
 function getTime() {
   const time = new Date().toLocaleString('en-GB', {
@@ -141,6 +139,7 @@ app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
   res.render("home");
+
 });
 
 app.get("/about", (req, res) => {
