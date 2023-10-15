@@ -23,6 +23,9 @@ npm install @firebase/firestore
 npm install @firebase/storage
 */
 
+const app = express();
+app.use(express.static("public"));
+
 const firebaseConfig = {
   apiKey: "AIzaSyDe2PJ7aGcAREEmOLKeGQNAKucbGkl62ss",
   authDomain: "inventarisgudangdci.firebaseapp.com",
@@ -132,12 +135,15 @@ function deleteFileStorage(path) {
       });
 }
 
-const app = express();
-
 app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
   res.render("home");
+
+});
+
+app.get("/about", (req, res) => {
+  res.render("about");
 });
 
 app.listen(2023, function () {
