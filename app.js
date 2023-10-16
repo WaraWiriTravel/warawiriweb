@@ -1,8 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const { initializeApp } = require('firebase/app');
-const { getFirestore } = require('firebase/firestore');
-const { getStorage, ref } = require('firebase/storage');
+const { initializeApp } = require("firebase/app");
+const { getFirestore } = require("firebase/firestore");
+const { getStorage, ref } = require("firebase/storage");
 
 /*
 pindahin ke firebaseFunction.js
@@ -32,7 +32,7 @@ const firebaseConfig = {
   projectId: "inventarisgudangdci",
   storageBucket: "inventarisgudangdci.appspot.com",
   messagingSenderId: "844624800675",
-  appId: "1:844624800675:web:8374b2378bc234f2d5c816"
+  appId: "1:844624800675:web:8374b2378bc234f2d5c816",
 };
 
 const firebase = initializeApp(firebaseConfig);
@@ -40,13 +40,13 @@ const firestore = getFirestore(firebase);
 const storage = getStorage();
 
 function getTime() {
-  const time = new Date().toLocaleString('en-GB', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
+  const time = new Date().toLocaleString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
   });
 
   return time;
@@ -126,26 +126,28 @@ function createFileStorage(path, file) {
 
 function deleteFileStorage(path) {
   const storageRef = ref(storage, path);
-    deleteObject(storageRef)
-      .then(() => {
-        console.log("File deleted from storage.");
-      })
-      .catch((error) => {
-        console.error("Error deleting file from storage: ", error);
-      });
+  deleteObject(storageRef)
+    .then(() => {
+      console.log("File deleted from storage.");
+    })
+    .catch((error) => {
+      console.error("Error deleting file from storage: ", error);
+    });
 }
 
 app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
   res.render("home");
-
 });
 
 app.get("/about", (req, res) => {
   res.render("about");
 });
 
+app.get("/blog", (req, res) => {
+  res.render("blog");
+});
 app.listen(2023, function () {
   console.log("Server berjalan di http://localhost:2023");
 });
