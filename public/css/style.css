@@ -54,7 +54,8 @@ section {
 }
 
 #blog,
-#pengalaman {
+#pengalaman,
+#blog-detail {
   background-color: #e2edff;
   padding-top: 3rem;
 }
