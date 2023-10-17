@@ -148,6 +148,10 @@ app.get("/about", (req, res) => {
 app.get("/blog", (req, res) => {
   res.render("blog");
 });
+
+app.get("/blog-detail", (req, res) => {
+  res.render("blog-detail");
+});
 app.listen(2023, function () {
   console.log("Server berjalan di http://localhost:2023");
 });
