@@ -91,7 +91,7 @@ app.get("/blog", (req, res) => {
     });
 });
 
-app.get("/blog-detail/:title", (req, res) => {
+app.get("/blog-detail-:title", (req, res) => {
   const title = req.params.title;
   let blogData;
 
