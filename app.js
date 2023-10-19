@@ -72,11 +72,48 @@ app.get("/about", (req, res) => {
 });
 
 app.get("/blog", (req, res) => {
-  res.render("blog");
+  db.collection("Blogs")
+    .orderBy("timestamp", "desc")
+    .get()
+    .then(snapshot => {
+      const blogs = [];
+      snapshot.forEach(doc => {
+        blogs.push({
+          documentID: doc.id,
+          ...doc.data(),
+        });
+      });
+
+      res.render("blog", { blogs: blogs });
+    })
+    .catch(error => {
+      res.send("Error: " + error);
+    });
 });
 
-app.get("/blog-detail", (req, res) => {
-  res.render("blog-detail");
+app.get("/blog-detail/:title", (req, res) => {
+  const title = req.params.title;
+  let blogData;
+
+  db.collection("Blogs")
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (data.title === title) {
+          blogData = data;
+        }
+      });
+
+      if (blogData) {
+        res.render("blog-detail", { blog: blogData });
+      } else {
+        res.send("Blog not found");
+      }
+    })
+    .catch(error => {
+      res.send("Error: " + error);
+    });
 });
 
 app.get("/dbtest", (req, res) => {
