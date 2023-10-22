@@ -1,151 +1,141 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const { initializeApp } = require('firebase/app');
-const { getFirestore } = require('firebase/firestore');
-const { getStorage, ref } = require('firebase/storage');
+const admin = require("firebase-admin");
+const path = require("path");
+const multer = require("multer");
 
-/*
-pindahin ke firebaseFunction.js
-const {
-  firestore,
-  storage,
-  getTime,
-  createDataStore,
-  readDataStore,
-  updateDataStore,
-  deleteDataStore,
-  createFileStorage,
-  deleteFileStorage,
-} = require("./firebaseFunctions");
+const serviceAccount = require("./warawiriweb-alphetor-firebase-adminsdk-g58h2-354dad6595.json");
 
-npm install firebase
-npm install @firebase/firestore
-npm install @firebase/storage
-*/
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+const db = admin.firestore();
+const storage = admin.storage().bucket("warawiriweb-alphetor.appspot.com");
 
 const app = express();
 app.use(express.static("public"));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDe2PJ7aGcAREEmOLKeGQNAKucbGkl62ss",
-  authDomain: "inventarisgudangdci.firebaseapp.com",
-  projectId: "inventarisgudangdci",
-  storageBucket: "inventarisgudangdci.appspot.com",
-  messagingSenderId: "844624800675",
-  appId: "1:844624800675:web:8374b2378bc234f2d5c816"
-};
-
-const firebase = initializeApp(firebaseConfig);
-const firestore = getFirestore(firebase);
-const storage = getStorage();
-
-function getTime() {
-  const time = new Date().toLocaleString('en-GB', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-  });
-
-  return time;
-}
-
-function createDataStore(col, data) {
-  const postCollection = collection(firestore, col);
-  const postData = data;
-  const newPostRef = addDoc(postCollection, postData)
-    .then((docRef) => {
-      console.log("Document written with ID: ", docRef.id);
-    })
-    .catch((error) => {
-      console.error("Error adding document: ", error);
-    });
-}
-
-function readDataStore(col) {
-  const postCollection = collection(firestore, col);
-  const querySnapshot = getDocs(postCollection)
-    .then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-        console.log("Document ID:", doc.id);
-        console.log("Data:", doc.data());
-      });
-    })
-    .catch((error) => {
-      console.error("Error getting documents: ", error);
-    });
-}
-
-function updateDataStore(col, docID, newData) {
-  const postRef = doc(firestore, col, docID);
-  updateDoc(postRef, newData)
-    .then(() => {
-      console.log("Document successfully updated!");
-    })
-    .catch((error) => {
-      console.error("Error updating document: ", error);
-    });
-}
-
-function deleteDataStore(col, docID, storagePath) {
-  const postRef = doc(firestore, col, docID);
-  deleteDoc(postRef)
-    .then(() => {
-      console.log("Document successfully deleted!");
-    })
-    .catch((error) => {
-      console.error("Error deleting document: ", error);
-    });
-
-  if (storagePath) {
-    const storageRef = ref(storage, storagePath);
-    deleteObject(storageRef)
-      .then(() => {
-        console.log("File deleted from storage.");
-      })
-      .catch((error) => {
-        console.error("Error deleting file from storage: ", error);
-      });
-  }
-}
-
-function createFileStorage(path, file) {
-  const storageRef = ref(storage, path + "/" + file.name);
-  const fileUploadTask = uploadBytes(storageRef, file);
-  fileUploadTask
-    .then((snapshot) => {
-      console.log("File uploaded:", snapshot.totalBytes, "bytes");
-      console.log("File URL:", getDownloadURL(storageRef));
-    })
-    .catch((error) => {
-      console.error("Error uploading file: ", error);
-    });
-}
-
-function deleteFileStorage(path) {
-  const storageRef = ref(storage, path);
-    deleteObject(storageRef)
-      .then(() => {
-        console.log("File deleted from storage.");
-      })
-      .catch((error) => {
-        console.error("Error deleting file from storage: ", error);
-      });
-}
+const storageMulter = multer.memoryStorage();
+const upload = multer({ storage: storageMulter });
 
 app.set("view engine", "ejs");
 
+app.post("/createpost", upload.single("image"), (req, res) => {
+  const title = req.body.title;
+  const content = req.body.content;
+  const imageBuffer = req.file.buffer;
+
+  const postRef = db.collection("Blogs").doc();
+  const documentID = postRef.id;
+  const storageFolder = `Blogs/${documentID}/`;
+  const fileName = req.file.originalname;
+
+  const file = storage.file(storageFolder + fileName);
+
+  file.save(imageBuffer, {
+    metadata: {
+      contentType: req.file.mimetype,
+    },
+    predefinedAcl: "publicRead",
+  }, (err) => {
+    if (err) {
+      res.send("Error: " + err);
+    } else {
+      const imageUrl = `https://storage.googleapis.com/${storage.name}/${storageFolder}${fileName}`;
+
+      const timestamp = admin.firestore.FieldValue.serverTimestamp();
+
+      postRef.set({
+        title: title,
+        content: content,
+        imageUrl: imageUrl,
+        timestamp: timestamp,
+      })
+      .then(() => {
+        res.redirect("/dbtest");
+      })
+      .catch(error => {
+        res.send("Error: " + error);
+      });
+    }
+  });
+});
+
 app.get("/", (req, res) => {
   res.render("home");
-
 });
 
 app.get("/about", (req, res) => {
   res.render("about");
 });
 
+app.get("/blog", (req, res) => {
+  db.collection("Blogs")
+    .orderBy("timestamp", "desc")
+    .get()
+    .then(snapshot => {
+      const blogs = [];
+      snapshot.forEach(doc => {
+        blogs.push({
+          documentID: doc.id,
+          ...doc.data(),
+        });
+      });
+
+      res.render("blog", { blogs: blogs });
+    })
+    .catch(error => {
+      res.send("Error: " + error);
+    });
+});
+
+app.get("/blog-detail-:title", (req, res) => {
+  const title = req.params.title;
+  let blogData;
+
+  db.collection("Blogs")
+    .get()
+    .then(snapshot => {
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        if (data.title === title) {
+          blogData = data;
+        }
+      });
+
+      if (blogData) {
+        res.render("blog-detail", { blog: blogData });
+      } else {
+        res.send("Blog not found");
+      }
+    })
+    .catch(error => {
+      res.send("Error: " + error);
+    });
+});
+
+app.get("/dbtest", (req, res) => {
+  db.collection("Blogs")
+    .orderBy("timestamp", "desc")
+    .get()
+    .then(snapshot => {
+      const blogs = [];
+      snapshot.forEach(doc => {
+        blogs.push({
+          documentID: doc.id,
+          ...doc.data(),
+        });
+      });
+
+      res.render("dbtest", { blogs: blogs });
+    })
+    .catch(error => {
+      res.send("Error: " + error);
+    });
+});
+  
 app.get("/faq", (req, res) => {
   res.render("faq");
 });
