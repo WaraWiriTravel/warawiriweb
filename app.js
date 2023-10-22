@@ -135,6 +135,10 @@ app.get("/dbtest", (req, res) => {
       res.send("Error: " + error);
     });
 });
+  
+app.get("/faq", (req, res) => {
+  res.render("faq");
+});
 
 app.listen(2023, function () {
   console.log("Server berjalan di http://localhost:2023");
