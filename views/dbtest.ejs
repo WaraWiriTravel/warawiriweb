@@ -1,0 +1,94 @@
+<!-- Pemanggilan bagian header -->
+<%- include("partials/header") %>
+<!-- Pemanggilan bagian Navbar -->
+<%- include("partials/navbar") %>
+
+<!-- Start dbtest -->
+<div class="container">
+  <h2>Create New Post</h2>
+  <form action="/createpost" method="POST" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="title">Title:</label>
+      <input type="text" name="title" id="title" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="content">Content:</label>
+      <textarea name="content" id="content" class="form-control" rows="4" required></textarea>
+    </div>
+    <div class="form-group">
+      <label for="image">Image:</label>
+      <input type="file" name="image" id="image" accept="image/jpeg, image/jpg, image/png" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+
+  <h4>Posts:</h4>
+  <ul>
+    <% blogs.forEach(blog => { %>
+      <li>
+        <div class="d-flex justify-content-between align-items-center">
+          <div style="max-width: 600px;">
+            <h5><%= blog.title %></h5>
+          </div>
+          <div>
+            <button class="btn btn-link" onclick="toggleContent('<%= blog.title %>')">Show</button>
+            <button class="btn btn-link" onclick="">Update</button>
+            <button class="btn btn-link text-danger" onclick="deletePost('<%= blog.documentID %>', '<%= blog.title %>')">Delete</button>
+          </div>
+        </div>
+        <div id="content-<%= blog.title %>" style="display: none;">
+          <img src="<%= blog.imageUrl %>" alt="<%= blog.title %> Image" style="max-width:500px; display: block; margin: 0 auto;">
+          <p><strong>Content:</strong> <%= blog.content %></p>
+        </div>
+      </li>
+    <% }); %>
+  </ul>
+</div>
+<!-- End dbtest -->
+
+<!-- Pemanggilan bagian footer -->
+<%- include("partials/footer") %>
+
+<script>
+  function toggleContent(title) {
+    const contentElement = document.getElementById("content-" + title);
+    const buttonElement = event.target;
+  
+    if (contentElement.style.display === "none") {
+      contentElement.style.display = "block";
+      buttonElement.textContent = "Hide";
+    } else {
+      contentElement.style.display = "none";
+      buttonElement.textContent = "Show";
+    }
+  }
+
+  function deletePost(docID, title) {
+    if (confirm("Are you sure you want to delete this post?")) {
+      console.log("a");
+      db.collection("Blogs")
+        .doc(docID)
+        .delete()
+        .then(() => {
+          const storageFolder = `Blogs/${docID}/`;
+          const files = storage.getFiles({ prefix: storageFolder });
+
+          Promise.all(
+            files.map(file => {
+              return file.delete();
+            })
+          )
+            .then(() => {
+              const postElement = document.getElementById("content-" + title);
+              postElement.remove();
+            })
+            .catch(error => {
+              alert("Error deleting from storage: " + error);
+            });
+        })
+        .catch(error => {
+          alert("Error deleting from Firestore: " + error);
+        });
+    }
+  }
+</script>

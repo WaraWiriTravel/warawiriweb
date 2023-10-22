@@ -1,0 +1,107 @@
+<!-- Pemanggilan bagian header -->
+<%- include("partials/header") %>
+<!-- Pemanggilan bagian Navbar -->
+<%- include("partials/navbar") %> <%let highlightBlog = blogs[0]; %>
+
+<!-- Halaman Blog -->
+<section id="blog">
+  <div class="container">
+    <div class="row mb-3">
+      <div class="col">
+        <h4 class="text-center">Apa yang baru dari Wara Wiri Tour ?</h4>
+      </div>
+    </div>
+    <a
+      href="/blog-detail-<%= highlightBlog.title %>"
+      class="text-reset text-decoration-none"
+    >
+      <div class="row mb-3">
+        <div class="col-md-4">
+          <img
+            class="img-fluid rounded-4 mx-auto d-block"
+            src="<%= highlightBlog.imageUrl %>"
+            alt=""
+          />
+        </div>
+        <div class="col-md-8">
+          <h5><%= highlightBlog.title %></h5>
+          <p><%= highlightBlog.content %></p>
+        </div>
+      </div></a
+    >
+  </div>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+    <path
+      fill="#ffffff"
+      fill-opacity="1"
+      d="M0,224L48,202.7C96,181,192,139,288,144C384,149,480,203,576,213.3C672,224,768,192,864,197.3C960,203,1056,245,1152,240C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+    ></path>
+  </svg>
+</section>
+
+<section>
+  <div class="container">
+    <div class="row mb-3 text-center">
+      <div class="col">
+        <h4>Informasi Lainnya</h4>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <% for(let i = 1; i < blogs.length; i++) { %> <% let blog = blogs[i]; %>
+      <div class="col-md-4 mb-3">
+        <a
+          href="/blog-detail-<%= blog.title %>"
+          class="text-reset text-decoration-none"
+        >
+          <div class="card">
+            <img src="<%= blog.imageUrl %>" class="card-img-top" />
+            <div class="card-body">
+              <p class="card-text"><%= blog.title %></p>
+            </div>
+          </div></a
+        >
+      </div>
+      <% } %>
+    </div>
+  </div>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+    <path
+      fill="#e2edff"
+      fill-opacity="1"
+      d="M0,192L48,208C96,224,192,256,288,240C384,224,480,160,576,149.3C672,139,768,181,864,176C960,171,1056,117,1152,122.7C1248,128,1344,192,1392,224L1440,256L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"
+    ></path>
+  </svg>
+</section>
+
+<section id="pengalaman">
+  <div class="container pb-4">
+    <div class="row text-center justify-content-center">
+      <h4 class="mb-4">
+        Pastikan anda mendapat informasi terkini untuk pengalaman tidak
+        terlupakan !
+      </h4>
+      <form method="POST" action="/daftar">
+        <div class="row g-3 justify-content-center">
+          <div class="col-12 col-sm-6">
+            <input
+              required
+              type="email"
+              class="form-control border-0"
+              placeholder="Your Email"
+              style="height: 55px"
+              name="nama"
+            />
+          </div>
+          <div class="col-12 col-sm-3">
+            <button class="btn btn-primary w-50 py-3" type="submit">
+              Submit
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- Pemanggilan bagian footer -->
+<%- include("partials/footer") %>

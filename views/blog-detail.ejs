@@ -1,0 +1,29 @@
+<!-- Pemanggilan bagian header -->
+<%- include("partials/header") %>
+<!-- Pemanggilan bagian Navbar -->
+<%- include("partials/navbar") %>
+
+<!-- Halaman Blog Detail -->
+<section id="blog-detail">
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <img src="<%= blog.imageUrl %>" alt="<%= blog.title %>" class="img-fluid rounded-4 mx-auto d-block pt-3"/>
+      </div>
+    </div>
+    <div class="row pt-5">
+      <div class="col">
+        <h4 class="text-center"><%= blog.title %></h4>
+        <p><%= blog.content %></p>
+      </div>
+    </div>
+  </div>
+  <a href="#" class="btn btn-lg btn-primary btn-lg-square rounded-4 back-to-top" id="btn-back-to-top"><i class="bi bi-arrow-up"></i></a>
+</section>
+
+<section></section>
+
+<!-- Halaman Blog Detail -->
+
+<!-- Pemanggilan bagian footer -->
+<%- include("partials/footer") %>
