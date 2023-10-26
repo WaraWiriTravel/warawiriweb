@@ -140,6 +140,6 @@ app.get("/faq", (req, res) => {
   res.render("faq");
 });
 
-app.listen(2023, function () {
+app.listen(process.env.PORT || 2023, function () {
   console.log("Server berjalan di http://localhost:2023");
 });
