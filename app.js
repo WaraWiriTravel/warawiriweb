@@ -152,6 +152,7 @@ app.get("/contact", (req, res) => {
 app.get("/login", (req, res) => {
   res.render("login");
 });
-app.listen(2023, function () {
+
+app.listen(process.env.PORT || 2023, function () {
   console.log("Server berjalan di http://localhost:2023");
 });
