@@ -34,33 +34,38 @@ app.post("/createpost", upload.single("image"), (req, res) => {
 
   const file = storage.file(storageFolder + fileName);
 
-  file.save(imageBuffer, {
-    metadata: {
-      contentType: req.file.mimetype,
+  file.save(
+    imageBuffer,
+    {
+      metadata: {
+        contentType: req.file.mimetype,
+      },
+      predefinedAcl: "publicRead",
     },
-    predefinedAcl: "publicRead",
-  }, (err) => {
-    if (err) {
-      res.send("Error: " + err);
-    } else {
-      const imageUrl = `https://storage.googleapis.com/${storage.name}/${storageFolder}${fileName}`;
+    (err) => {
+      if (err) {
+        res.send("Error: " + err);
+      } else {
+        const imageUrl = `https://storage.googleapis.com/${storage.name}/${storageFolder}${fileName}`;
 
-      const timestamp = admin.firestore.FieldValue.serverTimestamp();
+        const timestamp = admin.firestore.FieldValue.serverTimestamp();
 
-      postRef.set({
-        title: title,
-        content: content,
-        imageUrl: imageUrl,
-        timestamp: timestamp,
-      })
-      .then(() => {
-        res.redirect("/dbtest");
-      })
-      .catch(error => {
-        res.send("Error: " + error);
-      });
+        postRef
+          .set({
+            title: title,
+            content: content,
+            imageUrl: imageUrl,
+            timestamp: timestamp,
+          })
+          .then(() => {
+            res.redirect("/dbtest");
+          })
+          .catch((error) => {
+            res.send("Error: " + error);
+          });
+      }
     }
-  });
+  );
 });
 
 app.get("/", (req, res) => {
@@ -75,9 +80,9 @@ app.get("/blog", (req, res) => {
   db.collection("Blogs")
     .orderBy("timestamp", "desc")
     .get()
-    .then(snapshot => {
+    .then((snapshot) => {
       const blogs = [];
-      snapshot.forEach(doc => {
+      snapshot.forEach((doc) => {
         blogs.push({
           documentID: doc.id,
           ...doc.data(),
@@ -86,7 +91,7 @@ app.get("/blog", (req, res) => {
 
       res.render("blog", { blogs: blogs });
     })
-    .catch(error => {
+    .catch((error) => {
       res.send("Error: " + error);
     });
 });
@@ -97,8 +102,8 @@ app.get("/blog-detail-:title", (req, res) => {
 
   db.collection("Blogs")
     .get()
-    .then(snapshot => {
-      snapshot.forEach(doc => {
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
         const data = doc.data();
         if (data.title === title) {
           blogData = data;
@@ -111,7 +116,7 @@ app.get("/blog-detail-:title", (req, res) => {
         res.send("Blog not found");
       }
     })
-    .catch(error => {
+    .catch((error) => {
       res.send("Error: " + error);
     });
 });
@@ -120,9 +125,9 @@ app.get("/dbtest", (req, res) => {
   db.collection("Blogs")
     .orderBy("timestamp", "desc")
     .get()
-    .then(snapshot => {
+    .then((snapshot) => {
       const blogs = [];
-      snapshot.forEach(doc => {
+      snapshot.forEach((doc) => {
         blogs.push({
           documentID: doc.id,
           ...doc.data(),
@@ -131,13 +136,21 @@ app.get("/dbtest", (req, res) => {
 
       res.render("dbtest", { blogs: blogs });
     })
-    .catch(error => {
+    .catch((error) => {
       res.send("Error: " + error);
     });
 });
-  
+
 app.get("/faq", (req, res) => {
   res.render("faq");
+});
+
+app.get("/contact", (req, res) => {
+  res.render("contact");
+});
+
+app.get("/login", (req, res) => {
+  res.render("login");
 });
 
 app.listen(process.env.PORT || 2023, function () {
