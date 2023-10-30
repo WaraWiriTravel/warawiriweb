@@ -31,9 +31,9 @@
             <h5><%= blog.title %></h5>
           </div>
           <div>
-            <button class="btn btn-link" onclick="toggleContent('<%= blog.title %>')">Show</button>
-            <button class="btn btn-link" onclick="">Update</button>
-            <button class="btn btn-link text-danger" onclick="deletePost('<%= blog.documentID %>', '<%= blog.title %>')">Delete</button>
+            <button class="btn btn-link" onclick="window.location.href='/blog-detail-<%= blog.title %>'">Show</button>
+            <button class="btn btn-link" onclick="updateBlog('<%= blog.title %>', '<%= blog.content %>', '<%= blog.imageUrl %>', '<%= blog.documentID %>')">Update</button>
+            <button class="btn btn-link text-danger" onclick="deleteBlog('<%= blog.documentID %>')">Delete</button>
           </div>
         </div>
         <div id="content-<%= blog.title %>" style="display: none;">
@@ -50,44 +50,28 @@
 <%- include("partials/footer") %>
 
 <script>
-  function toggleContent(title) {
-    const contentElement = document.getElementById("content-" + title);
-    const buttonElement = event.target;
-  
-    if (contentElement.style.display === "none") {
-      contentElement.style.display = "block";
-      buttonElement.textContent = "Hide";
-    } else {
-      contentElement.style.display = "none";
-      buttonElement.textContent = "Show";
-    }
+  function updateBlog(title, content, imageUrl, documentID) {
+    const selectedBlog = { title, content, imageUrl, documentID };
+    const queryParams = new URLSearchParams(selectedBlog).toString();
+    const url = '/dbtest2?' + queryParams;
+
+    window.location.href = url;
   }
 
-  function deletePost(docID, title) {
-    if (confirm("Are you sure you want to delete this post?")) {
-      console.log("a");
-      db.collection("Blogs")
-        .doc(docID)
-        .delete()
-        .then(() => {
-          const storageFolder = `Blogs/${docID}/`;
-          const files = storage.getFiles({ prefix: storageFolder });
-
-          Promise.all(
-            files.map(file => {
-              return file.delete();
-            })
-          )
-            .then(() => {
-              const postElement = document.getElementById("content-" + title);
-              postElement.remove();
-            })
-            .catch(error => {
-              alert("Error deleting from storage: " + error);
-            });
+  function deleteBlog(documentID) {
+    if (confirm("Are you sure you want to delete " + documentID + " post?")) {
+      fetch(`/deletepost/${documentID}`, {
+        method: "POST",
+      })
+        .then((response) => {
+          if (response.ok) {
+            location.reload();
+          } else {
+            console.error("Error deleting the post");
+          }
         })
-        .catch(error => {
-          alert("Error deleting from Firestore: " + error);
+        .catch((error) => {
+          console.error("Error deleting the post:", error);
         });
     }
   }
