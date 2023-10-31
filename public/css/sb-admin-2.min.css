@@ -67,7 +67,7 @@ body {
   font-size: 1rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #858796;
+  color: #00030a;
   text-align: left;
   background-color: #fff;
 }
@@ -196,7 +196,7 @@ table {
 caption {
   padding-top: 0.75rem;
   padding-bottom: 0.75rem;
-  color: #858796;
+  color: #00030a;
   text-align: left;
   caption-side: bottom;
 }
@@ -1436,31 +1436,31 @@ pre code {
 .table {
   width: 100%;
   margin-bottom: 1rem;
-  color: #858796;
+  color: #00010d;
 }
 .table td,
 .table th {
   padding: 0.75rem;
   vertical-align: top;
-  border-top: 1px solid #e3e6f0;
+  border-top: 1px solid #00030a;
 }
 .table thead th {
   vertical-align: bottom;
-  border-bottom: 2px solid #e3e6f0;
+  border-bottom: 2px solid #00030a;
 }
 .table tbody + tbody {
-  border-top: 2px solid #e3e6f0;
+  border-top: 2px solid #00030a;
 }
 .table-sm td,
 .table-sm th {
   padding: 0.3rem;
 }
 .table-bordered {
-  border: 1px solid #e3e6f0;
+  border: 1px solid #00030a;
 }
 .table-bordered td,
 .table-bordered th {
-  border: 1px solid #e3e6f0;
+  border: 1px solid #00030a;
 }
 .table-bordered thead td,
 .table-bordered thead th {
@@ -1643,7 +1643,7 @@ pre code {
 .table .thead-light th {
   color: #6e707e;
   background-color: #eaecf4;
-  border-color: #e3e6f0;
+  border-color: #00030a;
 }
 .table-dark {
   color: #fff;
@@ -1820,7 +1820,7 @@ select.form-control:focus::-ms-value {
   margin-bottom: 0;
   font-size: 1rem;
   line-height: 1.5;
-  color: #858796;
+  color: #00030a;
   background-color: transparent;
   border: solid transparent;
   border-width: 1px 0;
@@ -1881,7 +1881,7 @@ textarea.form-control {
 }
 .form-check-input:disabled ~ .form-check-label,
 .form-check-input[disabled] ~ .form-check-label {
-  color: #858796;
+  color: #00030a;
 }
 .form-check-label {
   margin-bottom: 0;
@@ -2833,7 +2833,7 @@ input[type="submit"].btn-block {
   list-style: none;
   background-color: #fff;
   background-clip: padding-box;
-  border: 1px solid #e3e6f0;
+  border: 1px solid #00030a;
   border-radius: 0.35rem;
 }
 .dropdown-menu-left {
@@ -4148,7 +4148,7 @@ input[type="submit"].btn-block {
   word-wrap: break-word;
   background-color: #fff;
   background-clip: border-box;
-  border: 1px solid #e3e6f0;
+  border: 1px solid #00030a;
   border-radius: 0.35rem;
 }
 .card > hr {
@@ -4198,7 +4198,7 @@ input[type="submit"].btn-block {
   padding: 0.75rem 1.25rem;
   margin-bottom: 0;
   background-color: #f8f9fc;
-  border-bottom: 1px solid #e3e6f0;
+  border-bottom: 1px solid #00030a;
 }
 .card-header:first-child {
   border-radius: calc(0.35rem - 1px) calc(0.35rem - 1px) 0 0;
@@ -4206,7 +4206,7 @@ input[type="submit"].btn-block {
 .card-footer {
   padding: 0.75rem 1.25rem;
   background-color: #f8f9fc;
-  border-top: 1px solid #e3e6f0;
+  border-top: 1px solid #00030a;
 }
 .card-footer:last-child {
   border-radius: 0 0 calc(0.35rem - 1px) calc(0.35rem - 1px);
@@ -5247,7 +5247,7 @@ a.close.disabled {
   align-items: flex-start;
   justify-content: space-between;
   padding: 1rem 1rem;
-  border-bottom: 1px solid #e3e6f0;
+  border-bottom: 1px solid #00030a;
   border-top-left-radius: calc(0.3rem - 1px);
   border-top-right-radius: calc(0.3rem - 1px);
 }
@@ -5270,7 +5270,7 @@ a.close.disabled {
   align-items: center;
   justify-content: flex-end;
   padding: 0.75rem;
-  border-top: 1px solid #e3e6f0;
+  border-top: 1px solid #00030a;
   border-bottom-right-radius: calc(0.3rem - 1px);
   border-bottom-left-radius: calc(0.3rem - 1px);
 }
@@ -5908,19 +5908,19 @@ button.bg-dark:hover {
   background-color: transparent !important;
 }
 .border {
-  border: 1px solid #e3e6f0 !important;
+  border: 1px solid #00030a !important;
 }
 .border-top {
-  border-top: 1px solid #e3e6f0 !important;
+  border-top: 1px solid #00030a !important;
 }
 .border-right {
-  border-right: 1px solid #e3e6f0 !important;
+  border-right: 1px solid #00030a !important;
 }
 .border-bottom {
-  border-bottom: 1px solid #e3e6f0 !important;
+  border-bottom: 1px solid #00030a !important;
 }
 .border-left {
-  border-left: 1px solid #e3e6f0 !important;
+  border-left: 1px solid #00030a !important;
 }
 .border-0 {
   border: 0 !important;
@@ -8917,11 +8917,11 @@ a.text-dark:hover {
   .table-dark td,
   .table-dark th,
   .table-dark thead th {
-    border-color: #e3e6f0;
+    border-color: #00030a;
   }
   .table .thead-dark th {
     color: inherit;
-    border-color: #e3e6f0;
+    border-color: #00030a;
   }
 }
 html {
@@ -9262,7 +9262,7 @@ a:focus {
 }
 .topbar .topbar-divider {
   width: 0;
-  border-right: 1px solid #e3e6f0;
+  border-right: 1px solid #00030a;
   height: calc(4.375rem - 2rem);
   margin: auto 1rem;
 }
@@ -9301,9 +9301,9 @@ a:focus {
   white-space: normal;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-  border-left: 1px solid #e3e6f0;
-  border-right: 1px solid #e3e6f0;
-  border-bottom: 1px solid #e3e6f0;
+  border-left: 1px solid #00030a;
+  border-right: 1px solid #00030a;
+  border-bottom: 1px solid #00030a;
   line-height: 1.3rem;
 }
 .topbar .dropdown-list .dropdown-item .dropdown-list-image {

@@ -181,6 +181,14 @@ app.get("/tambah-paket", (req, res) => {
   res.render("admin/tambah-paket");
 });
 
+app.get("/edit-paket", (req, res) => {
+  res.render("admin/edit-paket");
+});
+
+app.get("/info-kontak", (req, res) => {
+  res.render("admin/info-kontak");
+});
+
 app.listen(process.env.PORT || 2023, function () {
   console.log("Server berjalan di http://localhost:2023");
 });

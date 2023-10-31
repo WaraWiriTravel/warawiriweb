@@ -4,34 +4,24 @@
 <div class="container-fluid">
   <!-- Page Heading -->
   <div class="row mt-5">
-    <div class="col"><h1 class="mb-4 text-gray-800">Blog</h1></div>
-    <div class="col">
-      <h1 class="mb-4 text-gray-800">
-        Tambah Berita Baru <button class="rounded-circle"><i class="fa-solid fa-plus"></i></button>
-      </h1>
-    </div>
+    <div class="col"><h1 class="text-center">Blog</h1></div>
   </div>
+  <!-- Divider -->
+  <hr class="sidebar-divider my-2 mt-2" />
   <!-- Form -->
-  <div class="row">
-    <div class="col-lg-12">
+  <div class="row justify-content-center p-5">
+    <div class="col-lg-8">
       <form method="POST" action="#" enctype="multipart/form-data">
         <!--  Berita  -->
         <div class="form-group">
-          <label for="email">Email</label>
           <input type="email" placeholder="Email" class="form-control" id="email" name="email" required />
         </div>
         <!--  No Wa  -->
         <div class="form-group">
-          <label for="nowa">Nomor Whatsapp</label>
-          <input type="text" placeholder="Email" class="form-control" id="nowa" name="nowa" required />
+          <input type="text" placeholder="Nomor Whatsapp" class="form-control" id="nowa" name="nowa" required />
         </div>
-
-        <!-- Berita -->
-        <div class="form-group"><input type="checkbox" /> Jadikan Highlight</div>
-
         <!-- Submit Button -->
-
-        <button type="submit" class="btn btn-primary">Post <i class="fa-solid fa-plus"></i></button>
+        <button type="submit" class="btn btn-primary">Simpan <i class="fa-regular fa-floppy-disk"></i></button>
       </form>
     </div>
   </div>
