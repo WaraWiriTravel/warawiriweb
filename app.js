@@ -153,6 +153,34 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
+app.get("/sidebar", (req, res) => {
+  res.render("admin/sidebar");
+});
+
+app.get("/home", (req, res) => {
+  res.render("admin/home");
+});
+
+app.get("/blog-admin", (req, res) => {
+  res.render("admin/blog-admin");
+});
+
+app.get("/tambah-berita", (req, res) => {
+  res.render("admin/tambah-berita");
+});
+
+app.get("/edit-berita", (req, res) => {
+  res.render("admin/edit-berita");
+});
+
+app.get("/paket", (req, res) => {
+  res.render("admin/paket");
+});
+
+app.get("/tambah-paket", (req, res) => {
+  res.render("admin/tambah-paket");
+});
+
 app.listen(process.env.PORT || 2023, function () {
   console.log("Server berjalan di http://localhost:2023");
 });
