@@ -16,19 +16,40 @@
         <div class="card">
           <div class="card-body">
             <div class="text-center">
-              <img src="/img/warawiri-logo.svg" class="img-fluid" width="80" alt="logo Wara Wiri Tour" />
+              <img
+                src="/img/warawiri-logo.svg"
+                class="img-fluid"
+                width="80"
+                alt="logo Wara Wiri Tour"
+              />
               <h4 class="h5 mt-4">Login</h4>
             </div>
-            <form>
+            <form action="/login" method="post">
               <div class="mb-3">
                 <label for="username">Username</label>
-                <input type="tet" class="form-control" id="username" placeholder="Your Username" />
+                <input
+                  type="tet"
+                  class="form-control"
+                  id="username"
+                  name="username"
+                  placeholder="Your Username"
+                />
               </div>
               <div class="mb-3">
                 <label for="password">Password</label>
-                <input type="password" class="form-control" id="password" placeholder="Your Password" />
+                <input
+                  type="password"
+                  class="form-control"
+                  id="password"
+                  name="password"
+                  placeholder="Your Password"
+                />
               </div>
-              <div class="text-center"><button type="submit" class="btn btn-primary w-50">Sign In</button></div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary w-50">
+                  Sign In
+                </button>
+              </div>
             </form>
           </div>
         </div>

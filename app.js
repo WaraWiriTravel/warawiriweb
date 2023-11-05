@@ -1,4 +1,5 @@
 const express = require("express");
+const session = require("express-session");
 const bodyParser = require("body-parser");
 const admin = require("firebase-admin");
 const path = require("path");
@@ -16,6 +17,31 @@ const storage = admin.storage().bucket("warawiriweb-alphetor.appspot.com");
 const app = express();
 app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// create session middleware
+app.use(
+  session({
+    secret: "not_yet_environmentized",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+// temporary user for auth checking => PINDAHIN KE DATABASE NANTI
+const users = [
+  {
+    id: 1,
+    username: "admin",
+    password: "admin",
+  },
+];
+
+const requireAuth = (req, res, next) => {
+  if (!req.session.user) {
+    return res.redirect("/login");
+  }
+  next();
+};
 
 const storageMulter = multer.memoryStorage();
 const upload = multer({ storage: storageMulter });
@@ -240,6 +266,68 @@ app.get("/dbtest", (req, res) => {
 app.get("/dbtest2", (req, res) => {
   const query = req.query;
   res.render("dbtest2", { query });
+});
+
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+
+  const user = users.find(
+    (u) => u.username === username && u.password === password
+  );
+
+  if (user) {
+    // store user data in the session
+    req.session.user = user;
+    res.redirect("/home");
+  } else {
+    res.redirect("/login");
+  }
+});
+
+app.get("/logout", (req, res) => {
+  // destroy session and logout
+  req.session.destroy((err) => {
+    if (err) {
+      console.log(err);
+    }
+    res.redirect("/");
+  });
+});
+
+// app.get("/sidebar", (req, res) => {
+//   res.render("admin/sidebar");
+// });
+
+app.get("/home", requireAuth, (req, res) => {
+  res.render("admin/home");
+});
+
+app.get("/blog-admin", requireAuth, (req, res) => {
+  res.render("admin/blog-admin");
+});
+
+app.get("/tambah-berita", requireAuth, (req, res) => {
+  res.render("admin/tambah-berita");
+});
+
+app.get("/edit-berita", requireAuth, (req, res) => {
+  res.render("admin/edit-berita");
+});
+
+app.get("/paket", requireAuth, (req, res) => {
+  res.render("admin/paket");
+});
+
+app.get("/tambah-paket", requireAuth, (req, res) => {
+  res.render("admin/tambah-paket");
+});
+
+app.get("/edit-paket", requireAuth, (req, res) => {
+  res.render("admin/edit-paket");
+});
+
+app.get("/info-kontak", requireAuth, (req, res) => {
+  res.render("admin/info-kontak");
 });
 
 app.listen(process.env.PORT || 2023, function () {

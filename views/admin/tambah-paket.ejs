@@ -1,0 +1,39 @@
+<!-- Pemanggilan bagian sidebar -->
+<%- include("sidebar") %>
+
+<div class="container-fluid my-5 px-5">
+  <div class="row">
+    <div class="col"><h1 class="mb-4">Paket</h1></div>
+    <div class="col">
+      <h1 class="mb-4">Tambah Paket</h1>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-lg-12">
+      <div class="text-center p-5">
+        <form method="POST" action="#" enctype="multipart/form-data">
+          <div class="row g-3 mb-3">
+            <div class="col-12 col-sm-6 mb-4">
+              <input required type="text" class="form-control border-2" placeholder="Nama Paket" style="height: 55px" name="nama" />
+            </div>
+            <div class="col-12 col-sm-6">
+              <input required type="text" class="form-control border-2" placeholder="Harga Terendah" style="height: 55px" name="hargarendah" />
+            </div>
+            <div class="col-12 col-sm-6">
+              <input required type="file" class="form-control border-2" style="height: 55px" name="gambar" />
+            </div>
+            <div class="col-12 col-sm-6 mb-4">
+              <input required type="text" class="form-control border-2" placeholder="Harga Tertinggi" style="height: 55px" name=" hargatinggi" />
+            </div>
+            <div class="col-12 col-sm-6 mb-4">
+              <textarea class="form-control" id="paket" name="paket" placeholder="Penjelasan Paket" required> </textarea>
+            </div>
+            <div class="col-12">
+              <button class="btn btn-primary w-50 py-3" type="submit">Add</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

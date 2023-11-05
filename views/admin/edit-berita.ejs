@@ -1,0 +1,42 @@
+<!-- Pemanggilan bagian sidebar -->
+<%- include("sidebar") %>
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <div class="row mt-5">
+    <div class="col"><h1 class="mb-4 text-gray-800">Blog</h1></div>
+    <div class="col">
+      <h1 class="mb-4 text-gray-800">
+        Edit Berita <button class="rounded-circle"><i class="fa-solid fa-plus"></i></button>
+      </h1>
+    </div>
+  </div>
+  <!-- Form -->
+  <div class="row">
+    <div class="col-lg-12">
+      <form method="POST" action="#" enctype="multipart/form-data">
+        <!--  Berita  -->
+        <div class="form-group">
+          <label for="Judul">Judul</label>
+          <input type="text" placeholder="Judul Berita" class="form-control" id="judul" name="judul" required />
+        </div>
+        <!-- Gambar -->
+        <div class="form-group">
+          <label for="Gambar">Gambar</label>
+          <input type="file" class="form-control" id="gambar" name="gambar" required />
+        </div>
+        <!-- Berita -->
+        <div class="form-group">
+          <label for="Berita">Berita</label>
+          <textarea class="form-control" id="Berita" name="Berita" required> </textarea>
+        </div>
+        <!-- Berita -->
+        <div class="form-group"><input type="checkbox" /> Jadikan Highlight</div>
+
+        <!-- Submit Button -->
+
+        <button type="submit" class="btn btn-primary">Simpan <i class="fa-regular fa-floppy-disk"></i></button>
+      </form>
+    </div>
+  </div>
+</div>

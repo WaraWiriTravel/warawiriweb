@@ -43,14 +43,23 @@ h5 {
   font-size: 14px;
   letter-spacing: 2.35px;
 }
-.nav-text {
+.nav-link {
   font-family: "Montserrat", sans-serif;
   font-size: 16px;
   letter-spacing: 2.7px;
+  /* color: white; */
 }
 
 .navbar {
   background: linear-gradient(to left, #003366, #0d98ba);
+}
+
+.nav-link {
+  color: white;
+}
+
+.nav-link:hover {
+  color: #cfd0e8;
 }
 
 section {
