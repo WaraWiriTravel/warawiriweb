@@ -113,11 +113,12 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
-//test untuk database, tambah baris baru diatas ini
-app.post("/createpost", upload.single("image"), (req, res) => {
-  const title = req.body.title;
-  const content = req.body.content;
+app.post("/createpost", upload.single("gambar"), (req, res) => {
+  const title = req.body.judul;
+  const content = req.body.Berita;
   const imageBuffer = req.file.buffer;
+  const isHighlight = req.body.status === undefined ? 'off' : req.body.status;
+
 
   const postRef = db.collection("Blogs").doc();
   const documentID = postRef.id;
@@ -147,10 +148,11 @@ app.post("/createpost", upload.single("image"), (req, res) => {
             title: title,
             content: content,
             imageUrl: imageUrl,
+            status: isHighlight,
             timestamp: timestamp,
           })
           .then(() => {
-            res.redirect("/dbtest");
+            res.redirect("/blog-admin");
           })
           .catch((error) => {
             res.send("Error: " + error);
@@ -161,41 +163,43 @@ app.post("/createpost", upload.single("image"), (req, res) => {
 });
 
 app.post("/updatepost", upload.single("newImage"), async (req, res) => {
-  const title = req.body.title;
-  const content = req.body.content;
+  let imageUrl;
+  const title = req.body.judul;
+  const content = req.body.Berita;
   const documentID = req.body.ID;
+  const isHighlight = req.body.status === undefined ? 'off' : req.body.status;
 
   try {
-    const oldPost = await db.collection("Blogs").doc(documentID).get();
-    if (oldPost.exists) {
-      const oldData = oldPost.data();
-      if (oldData.imageUrl) {
-        const oldImageUrl = oldData.imageUrl;
-        const fileName = oldImageUrl.split("/").pop();
-        const storageFolder = `Blogs/${documentID}/`;
+    if (req.body.newImage) {
+      const oldPost = await db.collection("Blogs").doc(documentID).get();
+      if (oldPost.exists) {
+        const oldData = oldPost.data();
+        if (oldData.imageUrl) {
+          const oldImageUrl = oldData.imageUrl;
+          const fileName = oldImageUrl.split("/").pop();
+          const storageFolder = `Blogs/${documentID}/`;
 
-        const oldFile = storage.file(storageFolder + fileName);
-        await oldFile.delete();
+          const oldFile = storage.file(storageFolder + fileName);
+          await oldFile.delete();
+        }
       }
-    }
 
-    let imageUrl;
+      if (req.file && req.file.buffer) {
+        const imageBuffer = req.file.buffer;
+        const storageFolder = `Blogs/${documentID}/`;
+        const fileName = req.file.originalname;
 
-    if (req.file && req.file.buffer) {
-      const imageBuffer = req.file.buffer;
-      const storageFolder = `Blogs/${documentID}/`;
-      const fileName = req.file.originalname;
+        const file = storage.file(storageFolder + fileName);
 
-      const file = storage.file(storageFolder + fileName);
+        await file.save(imageBuffer, {
+          metadata: {
+            contentType: req.file.mimetype,
+          },
+          predefinedAcl: "publicRead",
+        });
 
-      await file.save(imageBuffer, {
-        metadata: {
-          contentType: req.file.mimetype,
-        },
-        predefinedAcl: "publicRead",
-      });
-
-      imageUrl = `https://storage.googleapis.com/${storage.name}/${storageFolder}${fileName}`;
+        imageUrl = `https://storage.googleapis.com/${storage.name}/${storageFolder}${fileName}`;
+      }
     }
 
     const postRef = db.collection("Blogs").doc(documentID);
@@ -205,6 +209,7 @@ app.post("/updatepost", upload.single("newImage"), async (req, res) => {
       title: title,
       content: content,
       timestamp: timestamp,
+      status: isHighlight,
     };
 
     if (imageUrl) {
@@ -214,7 +219,7 @@ app.post("/updatepost", upload.single("newImage"), async (req, res) => {
     await postRef.set(updateData, { merge: true });
 
     console.log("Post updated successfully");
-    res.redirect("/dbtest");
+    res.redirect("/blog-admin");
   } catch (error) {
     console.log("Error updating post: " + error);
     res.send("Error updating post: " + error);
@@ -243,29 +248,21 @@ app.post("/deletepost/:documentID", async (req, res) => {
   }
 });
 
-app.get("/dbtest", (req, res) => {
-  db.collection("Blogs")
-    .orderBy("timestamp", "desc")
-    .get()
-    .then((snapshot) => {
-      const blogs = [];
-      snapshot.forEach((doc) => {
-        blogs.push({
-          documentID: doc.id,
-          ...doc.data(),
-        });
-      });
+app.post("/updatestatus/:documentID", async (req, res) => {
+  const documentID = req.params.documentID;
+  const status = req.query.status;
 
-      res.render("dbtest", { blogs: blogs });
+  const postRef = db.collection("Blogs").doc(documentID);
+
+  return postRef
+    .update({ status: status })
+    .then(() => {
+      res.sendStatus(200);
     })
     .catch((error) => {
-      res.send("Error: " + error);
+      console.error("Error updating status:", error);
+      res.status(500).send("Error updating status");
     });
-});
-
-app.get("/dbtest2", (req, res) => {
-  const query = req.query;
-  res.render("dbtest2", { query });
 });
 
 app.post("/login", (req, res) => {
@@ -303,7 +300,22 @@ app.get("/home", requireAuth, (req, res) => {
 });
 
 app.get("/blog-admin", requireAuth, (req, res) => {
-  res.render("admin/blog-admin");
+  db.collection("Blogs")
+    .get()
+    .then((snapshot) => {
+      const blogs = [];
+      snapshot.forEach((doc) => {
+        blogs.push({
+          documentID: doc.id,
+          ...doc.data(),
+        });
+      });
+
+      res.render("admin/blog-admin", { blogs: blogs });
+    })
+    .catch((error) => {
+      res.send("Error: " + error);
+    });
 });
 
 app.get("/tambah-berita", requireAuth, (req, res) => {
@@ -311,7 +323,8 @@ app.get("/tambah-berita", requireAuth, (req, res) => {
 });
 
 app.get("/edit-berita", requireAuth, (req, res) => {
-  res.render("admin/edit-berita");
+  const query = req.query;
+  res.render("admin/edit-berita", { query });
 });
 
 app.get("/paket", requireAuth, (req, res) => {
