@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const admin = require("firebase-admin");
 const path = require("path");
 const multer = require("multer");
+const md5 = require("md5");
 
 const serviceAccount = require("./warawiriweb-alphetor-firebase-adminsdk-g58h2-354dad6595.json");
 
@@ -28,13 +29,13 @@ app.use(
 );
 
 // temporary user for auth checking => PINDAHIN KE DATABASE NANTI
-const users = [
-  {
-    id: 1,
-    username: "admin",
-    password: "admin",
-  },
-];
+// const users = [
+//   {
+//     id: 1,
+//     username: "admin",
+//     password: "21232f297a57a5a743894a0e4a801fc3",
+//   },
+// ];
 
 const requireAuth = (req, res, next) => {
   if (!req.session.user) {
@@ -268,16 +269,28 @@ app.get("/dbtest2", (req, res) => {
   res.render("dbtest2", { query });
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
-  const user = users.find(
-    (u) => u.username === username && u.password === password
+  let user = [];
+  await db
+    .collection("User")
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
+        user.push({
+          ...doc.data(),
+        });
+      });
+    });
+
+  const activeUser = user.find(
+    (u) => u.username === username && u.password === md5(password)
   );
 
-  if (user) {
+  if (activeUser) {
     // store user data in the session
-    req.session.user = user;
+    req.session.user = activeUser;
     res.redirect("/home");
   } else {
     res.redirect("/login");
