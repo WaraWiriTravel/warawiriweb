@@ -1,7 +1,7 @@
 <!-- Pemanggilan bagian header -->
 <%- include("partials/header") %>
 <!-- Pemanggilan bagian Navbar -->
-<%- include("partials/navbar") %> <%let highlightBlog = blogs[0]; %>
+<%- include("partials/navbar") %> <%let highlightBlog = highlightBlogs[0]; %>
 
 <!-- Halaman Blog -->
 <section id="blog">
@@ -47,7 +47,7 @@
       </div>
     </div>
     <div class="row justify-content-center">
-      <% for(let i = 1; i < blogs.length; i++) { %> <% let blog = blogs[i]; %>
+      <% for(let i = 0; i < blogs.length; i++) { %> <% let blog = blogs[i]; %>
       <div class="col-md-4 mb-3">
         <a
           href="/blog-detail-<%= blog.title %>"

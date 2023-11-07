@@ -73,6 +73,7 @@
       .then((response) => {
         if (response.ok) {
           console.log("Status updated successfully");
+          location.reload();
         } else {
           console.error("Error updating status");
           checkbox.checked = !checkbox.checked;

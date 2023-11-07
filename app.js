@@ -58,18 +58,27 @@ app.get("/about", (req, res) => {
 
 app.get("/blog", (req, res) => {
   db.collection("Blogs")
-    .orderBy("timestamp", "desc")
+    .orderBy("up_timestamp", "desc")
     .get()
     .then((snapshot) => {
       const blogs = [];
+      const highlightBlogs = [];
       snapshot.forEach((doc) => {
-        blogs.push({
-          documentID: doc.id,
-          ...doc.data(),
-        });
+        const data = doc.data();
+        if (data.status === "on") {
+          highlightBlogs.push({
+            documentID: doc.id,
+          ...data,
+          });
+        } else {
+          blogs.push({
+            documentID: doc.id,
+            ...data,
+          });
+        }
       });
 
-      res.render("blog", { blogs: blogs });
+      res.render("blog", { highlightBlogs: highlightBlogs, blogs: blogs });
     })
     .catch((error) => {
       res.send("Error: " + error);
@@ -149,7 +158,8 @@ app.post("/createpost", upload.single("gambar"), (req, res) => {
             content: content,
             imageUrl: imageUrl,
             status: isHighlight,
-            timestamp: timestamp,
+            cr_timestamp: timestamp,
+            up_timestamp: timestamp,
           })
           .then(() => {
             res.redirect("/blog-admin");
@@ -208,7 +218,7 @@ app.post("/updatepost", upload.single("newImage"), async (req, res) => {
     const updateData = {
       title: title,
       content: content,
-      timestamp: timestamp,
+      up_timestamp: timestamp,
       status: isHighlight,
     };
 
@@ -251,12 +261,27 @@ app.post("/deletepost/:documentID", async (req, res) => {
 app.post("/updatestatus/:documentID", async (req, res) => {
   const documentID = req.params.documentID;
   const status = req.query.status;
+  const timestamp = admin.firestore.FieldValue.serverTimestamp();
 
   const postRef = db.collection("Blogs").doc(documentID);
 
   return postRef
-    .update({ status: status })
-    .then(() => {
+    .update({ 
+      status: status,
+      up_timestamp: timestamp, 
+    })
+    .then(async () => {
+      const querySnapshot = await db
+        .collection("Blogs")
+        .where("status", "==", "on")
+        .orderBy("up_timestamp", "asc")
+        .get();
+
+      if (querySnapshot.size > 3) {
+        const oldestBlog = querySnapshot.docs[0];
+        await oldestBlog.ref.update({ status: "off" });
+      } 
+
       res.sendStatus(200);
     })
     .catch((error) => {
