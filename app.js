@@ -78,6 +78,12 @@ app.get("/blog", (req, res) => {
         }
       });
 
+      const x = 3 - highlightBlogs.length;
+      if (x !== 0) {
+        highlightBlogs.push(...blogs.slice(0, x));
+        blogs.splice(0, x);
+      };
+
       res.render("blog", { highlightBlogs: highlightBlogs, blogs: blogs });
     })
     .catch((error) => {
