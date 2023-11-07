@@ -159,6 +159,22 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
+app.get("/paket", (req, res) => {
+  res.render("packet-pricing");
+});
+
+app.get("/paket-detail", (req, res) => {
+  res.render("packet-pricing-details");
+});
+
+app.get("/paket", (req, res) => {
+  res.render("packet-pricing");
+});
+
+app.get("/paket-detail", (req, res) => {
+  res.render("packet-pricing-details");
+});
+
 app.post("/createpost", upload.single("gambar"), (req, res) => {
   const title = req.body.judul;
   const content = req.body.Berita;
