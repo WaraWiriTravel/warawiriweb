@@ -159,20 +159,49 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
-app.get("/paket", (req, res) => {
-  res.render("packet-pricing");
+app.get("/pricing", (req, res) => {
+  db.collection("Paket")
+    .orderBy("up_timestamp", "desc")
+    .get()
+    .then((snapshot) => {
+      const paket = [];
+      snapshot.forEach((doc) => {
+        paket.push({
+          documentID: doc.id,
+          ...doc.data(),
+        });
+      });
+
+      res.render("packet-pricing", { pakets: paket });
+    })
+    .catch((error) => {
+      res.send("Error: " + error);
+    });
 });
 
-app.get("/paket-detail", (req, res) => {
-  res.render("packet-pricing-details");
-});
+app.get("/paket-detail-:nama", (req, res) => {
+  const nama = req.params.nama;
+  let paketData;
 
-app.get("/paket", (req, res) => {
-  res.render("packet-pricing");
-});
+  db.collection("Paket")
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.nama === nama) {
+          paketData = data;
+        }
+      });
 
-app.get("/paket-detail", (req, res) => {
-  res.render("packet-pricing-details");
+      if (paketData) {
+        res.render("packet-pricing-details", { paket: paketData });
+      } else {
+        res.send("Item not found");
+      }
+    })
+    .catch((error) => {
+      res.send("Error: " + error);
+    });
 });
 
 app.post("/createpost", upload.single("gambar"), (req, res) => {
@@ -223,6 +252,72 @@ app.post("/createpost", upload.single("gambar"), (req, res) => {
       }
     }
   );
+});
+
+app.post("/createItem", upload.array("gambar"), async (req, res) => {
+  const namaPaket = req.body.nama;
+  const minHarga = req.body.minHarga;
+  const maxHarga = req.body.maxHarga;
+  const desc = req.body.desc;
+  const gambarFiles = req.files;
+
+  const gambarUrls = [];
+  const itemRef = db.collection("Paket").doc();
+
+  const documentID = itemRef.id;
+
+  const storagePromises = [];
+
+  gambarFiles.forEach((gambarFile) => {
+    const imageBuffer = gambarFile.buffer;
+    const fileName = gambarFile.originalname;
+    const storageFolder = `Paket/${documentID}/`;
+    const fileUrl = `https://storage.googleapis.com/${storage.name}/${storageFolder}${fileName}`;
+
+    const storageFile = storage.file(storageFolder + fileName);
+
+    const storagePromise = new Promise((resolve, reject) => {
+      storageFile.save(
+        imageBuffer,
+        {
+          metadata: {
+            contentType: gambarFile.mimetype,
+          },
+          predefinedAcl: "publicRead",
+        },
+        (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            gambarUrls.push(fileUrl);
+            resolve();
+          }
+        }
+      );
+    });
+
+    storagePromises.push(storagePromise);
+  });
+
+  try {
+    await Promise.all(storagePromises);
+
+    const timestamp = admin.firestore.FieldValue.serverTimestamp();
+
+    await itemRef.set({
+      nama: namaPaket,
+      minHarga: minHarga,
+      maxHarga: maxHarga,
+      desc: desc,
+      gambar: gambarUrls,
+      cr_timestamp: timestamp,
+      up_timestamp: timestamp,
+    });
+
+    res.redirect("paket");
+  } catch (error) {
+    res.send("Error: " + error);
+  }
 });
 
 app.post("/updatepost", upload.single("newImage"), async (req, res) => {
@@ -437,7 +532,22 @@ app.get("/edit-berita", requireAuth, (req, res) => {
 });
 
 app.get("/paket", requireAuth, (req, res) => {
-  res.render("admin/paket");
+  db.collection("Paket")
+    .get()
+    .then((snapshot) => {
+      const paket = [];
+      snapshot.forEach((doc) => {
+        paket.push({
+          documentID: doc.id,
+          ...doc.data(),
+        });
+      });
+
+      res.render("admin/paket", { pakets: paket });
+    })
+    .catch((error) => {
+      res.send("Error: " + error);
+    });
 });
 
 app.get("/tambah-paket", requireAuth, (req, res) => {
