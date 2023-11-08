@@ -49,7 +49,38 @@ const upload = multer({ storage: storageMulter });
 app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
-  res.render("home");
+  db.collection("Blogs")
+    .orderBy("up_timestamp", "desc")
+    .get()
+    .then((snapshot) => {
+      const blogs = [];
+      const highlightBlogs = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.status === "on") {
+          highlightBlogs.push({
+            documentID: doc.id,
+          ...data,
+          });
+        } else {
+          blogs.push({
+            documentID: doc.id,
+            ...data,
+          });
+        }
+      });
+
+      const x = 3 - highlightBlogs.length;
+      if (x !== 0) {
+        highlightBlogs.push(...blogs.slice(0, x));
+        blogs.splice(0, x);
+      };
+
+      res.render("home", { highlightBlogs: highlightBlogs });
+    })
+    .catch((error) => {
+      res.send("Error: " + error);
+    });
 });
 
 app.get("/about", (req, res) => {
@@ -327,7 +358,38 @@ app.get("/logout", (req, res) => {
 // });
 
 app.get("/home", requireAuth, (req, res) => {
-  res.render("admin/home");
+  db.collection("Blogs")
+    .orderBy("up_timestamp", "desc")
+    .get()
+    .then((snapshot) => {
+      const blogs = [];
+      const highlightBlogs = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.status === "on") {
+          highlightBlogs.push({
+            documentID: doc.id,
+          ...data,
+          });
+        } else {
+          blogs.push({
+            documentID: doc.id,
+            ...data,
+          });
+        }
+      });
+
+      const x = 3 - highlightBlogs.length;
+      if (x !== 0) {
+        highlightBlogs.push(...blogs.slice(0, x));
+        blogs.splice(0, x);
+      };
+
+      res.render("admin/home", { highlightBlogs: highlightBlogs });
+    })
+    .catch((error) => {
+      res.send("Error: " + error);
+    });
 });
 
 app.get("/blog-admin", requireAuth, (req, res) => {
