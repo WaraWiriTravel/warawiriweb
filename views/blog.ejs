@@ -47,7 +47,7 @@
       </div>
     </div>
     <div class="row justify-content-center">
-      <% for(let i = 0; i < blogs.length; i++) { %> <% let blog = blogs[i]; %>
+      <% blogs.forEach(blog => { %>
       <div class="col-md-4 mb-3">
         <a
           href="/blog-detail-<%= blog.title %>"
@@ -61,7 +61,7 @@
           </div></a
         >
       </div>
-      <% } %>
+      <% }); %>
     </div>
   </div>
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">

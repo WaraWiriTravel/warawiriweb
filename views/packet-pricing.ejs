@@ -27,71 +27,24 @@
       </div>
     </div>
     <div class="row justify-content-center">
+      <% pakets.forEach(paket => { %>
       <div class="col-md-6 mb-3">
         <a
-          href="/paket-detail"
+          href="/paket-detail-<%= paket.nama %>"
           class="text-reset text-decoration-none"
         >
           <div class="card">
-            <h5 class="text-center">Paket Tour 1</h5>
-            <img src="img/slide-4.jpg" class="card-img-top" />
+            <h5 class="text-center"><%= paket.nama %></h5>
+            <img src="<%= paket.gambar[0] %>"" class="card-img-top" />
             <div class="card-body">
-              <p class="card-text">Harga Rp.300.000/10 orang</p>
-              <p class="card-text">Harga Rp.1.000.000/orang</p>
-              <p class="card-text">Rute Bandar Lampung - Jakarta</p>
+              <p class="card-text">Harga Rp.<%= paket.minHarga %>/10 orang</p>
+              <p class="card-text">Harga Rp.<%= paket.maxHarga %>/orang</p>
+              <p class="card-text"><%= paket.desc %></p>
             </div>
           </div></a
         >
       </div>
-
-      <div class="col-md-6 mb-3">
-        <a
-          href="#"
-          class="text-reset text-decoration-none"
-        >
-          <div class="card">
-            <h5 class="text-center">Paket Tour 2</h5>
-            <img src="img/slide-4.jpg" class="card-img-top" />
-            <div class="card-body">
-              <p class="card-text">Harga Rp.300.000/10 orang</p>
-              <p class="card-text">Harga Rp.1.000.000/orang</p>
-              <p class="card-text">Rute Bandar Lampung - Jakarta</p>
-            </div>
-          </div></a
-        >
-      </div>
-      <div class="col-md-6 mb-3">
-        <a
-          href="#"
-          class="text-reset text-decoration-none"
-        >
-          <div class="card">
-            <h5 class="text-center">Paket Tour 3</h5>
-            <img src="img/slide-4.jpg" class="card-img-top" />
-            <div class="card-body">
-              <p class="card-text">Harga Rp.300.000/10 orang</p>
-              <p class="card-text">Harga Rp.1.000.000/orang</p>
-              <p class="card-text">Rute Bandar Lampung - Jakarta</p>
-            </div>
-          </div></a
-        >
-      </div>
-      <div class="col-md-6 mb-3">
-        <a
-          href="#"
-          class="text-reset text-decoration-none"
-        >
-          <div class="card">
-            <h5 class="text-center">Paket Tour 4</h5>
-            <img src="img/slide-4.jpg" class="card-img-top" />
-            <div class="card-body">
-              <p class="card-text">Harga Rp.300.000/10 orang</p>
-              <p class="card-text">Harga Rp.1.000.000/orang</p>
-              <p class="card-text">Rute Bandar Lampung - Jakarta</p>
-            </div>
-          </div></a
-        >
-      </div>
+      <% }); %>
     </div>
   </div>
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
