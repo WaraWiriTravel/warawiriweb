@@ -210,7 +210,6 @@ app.post("/createpost", upload.single("gambar"), (req, res) => {
   const imageBuffer = req.file.buffer;
   const isHighlight = req.body.status === undefined ? 'off' : req.body.status;
 
-
   const postRef = db.collection("Blogs").doc();
   const documentID = postRef.id;
   const storageFolder = `Blogs/${documentID}/`;
