@@ -50,15 +50,16 @@ h5 {
 }
 
 .navbar {
-  background: linear-gradient(to left, #003366, #0d98ba);
+  background: linear-gradient(to left, #fdda84, #f1eee3);
 }
 
 .nav-link {
-  color: white;
+  color: #082219;
 }
 
 .nav-link:hover {
-  color: #cfd0e8;
+  color: #082219;
+  text-decoration: underline;
 }
 
 section {
