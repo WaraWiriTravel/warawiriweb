@@ -93,29 +93,15 @@ app.get("/blog", (req, res) => {
     .get()
     .then((snapshot) => {
       const blogs = [];
-      const highlightBlogs = [];
       snapshot.forEach((doc) => {
         const data = doc.data();
-        if (data.status === "on") {
-          highlightBlogs.push({
-            documentID: doc.id,
+        blogs.push({
+          documentID: doc.id,
           ...data,
-          });
-        } else {
-          blogs.push({
-            documentID: doc.id,
-            ...data,
-          });
-        }
+        });
       });
 
-      const x = 3 - highlightBlogs.length;
-      if (x !== 0) {
-        highlightBlogs.push(...blogs.slice(0, x));
-        blogs.splice(0, x);
-      };
-
-      res.render("blog", { highlightBlogs: highlightBlogs, blogs: blogs });
+      res.render("blog", { blogs: blogs });
     })
     .catch((error) => {
       res.send("Error: " + error);

@@ -73,6 +73,10 @@ section {
   padding-top: 3rem;
 }
 
+#pengalaman {
+  height: 70vh;
+}
+
 #btn-back-to-top {
   position: fixed;
   bottom: 20px;
@@ -213,7 +217,7 @@ section {
 }
 
 .bn32:hover {
-  color: #ffffff;
+  color: #ffffff !important;
   background-position: 100%;
 }
 
