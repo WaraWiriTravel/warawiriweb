@@ -56,3 +56,41 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.querySelectorAll('.edit-item').forEach(function(element) {
+    element.addEventListener('click', function() {
+      const documentID = this.getAttribute('data-documentid');
+      const title = this.getAttribute('data-title');
+      const content = this.getAttribute('data-content');
+      const imageUrl = this.getAttribute('data-imageUrl');
+      const status = this.getAttribute('data-status');
+      const selectedBlog = { title, content, imageUrl, documentID, status };
+      const queryParams = new URLSearchParams(selectedBlog).toString();
+      const url = '/edit-berita?' + queryParams;
+
+      window.location.href = url;
+    });
+  });
+
+  document.querySelectorAll('.delete-item').forEach(function(element) {
+    element.addEventListener('click', function() {
+      const documentID = this.getAttribute('data-documentid');
+      if (confirm("Are you sure you want to delete " + documentID + " post?")) {
+        fetch(`/deletepost/${documentID}`, {
+          method: "POST",
+        })
+          .then((response) => {
+            if (response.ok) {
+              location.reload();
+            } else {
+              console.error("Error deleting the post");
+            }
+          })
+          .catch((error) => {
+            console.error("Error deleting the post:", error);
+          });
+      }
+    });
+  });
+</script>
