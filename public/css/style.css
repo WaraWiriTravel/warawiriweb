@@ -3,25 +3,25 @@ body::-webkit-scrollbar {
 }
 
 h1 {
-  font-family: "Montserrat", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 400; /* Regular */
   font-size: 150px;
 }
 
 h2 {
-  font-family: "Montserrat", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 400; /* Regular */
   font-size: 100px;
 }
 
 h3 {
-  font-family: "Montserrat", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 400; /* Regular */
   font-size: 150px;
 }
 
 h4 {
-  font-family: "Montserrat", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-weight: 400; /* Regular */
   font-size: 56px;
 }
@@ -30,7 +30,6 @@ h5 {
   font-family: "Roboto", sans-serif;
   font-weight: 400; /* Regular */
   font-size: 28px;
-  letter-spacing: 4.75px;
 }
 
 #subheading1 {
@@ -39,12 +38,12 @@ h5 {
 }
 
 #subheading2 {
-  font-family: "Montserrat", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 14px;
   letter-spacing: 2.35px;
 }
 .nav-link {
-  font-family: "Montserrat", sans-serif;
+  font-family: "Roboto", sans-serif;
   font-size: 16px;
   letter-spacing: 2.7px;
   /* color: white; */
@@ -216,4 +215,8 @@ section {
 .bn32:hover {
   color: #ffffff;
   background-position: 100%;
+}
+
+.whiteshade {
+  background: rgba(255, 255, 255, 0.3);
 }
