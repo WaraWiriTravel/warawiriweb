@@ -1,0 +1,39 @@
+<!-- Pemanggilan bagian sidebar -->
+<%- include("sidebar") %>
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <!-- Page Heading -->
+  <div class="row mt-4">
+    <div class="col-6"><h1 class="mb-4">Newsletter</h1></div>
+    <div class="col-6">
+      <h1 class="mb-4">
+        Kirim Berita Baru
+        <a href="/tambah-newsletter"
+          ><button class="rounded-circle"><i class="fa-solid fa-plus"></i></button>
+        </a>
+      </h1>
+    </div>
+  </div>
+  <!-- DataTales Example -->
+  <div class="card shadow mb-4">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>Email Subscriber</th>
+              <th>Berlangganan Sejak</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr>
+              <td>user@gmail.com</td>
+              <td>23 Maret 2023</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
