@@ -5,31 +5,27 @@ body::-webkit-scrollbar {
 h1 {
   font-family: "Roboto", sans-serif;
   font-weight: 400; /* Regular */
-  font-size: 150px;
 }
 
 h2 {
   font-family: "Roboto", sans-serif;
   font-weight: 400; /* Regular */
-  font-size: 100px;
 }
 
 h3 {
   font-family: "Roboto", sans-serif;
   font-weight: 400; /* Regular */
-  font-size: 150px;
 }
 
 h4 {
   font-family: "Roboto", sans-serif;
   font-weight: 400; /* Regular */
-  font-size: 56px;
 }
 
 h5 {
   font-family: "Roboto", sans-serif;
   font-weight: 400; /* Regular */
-  font-size: 28px;
+
 }
 
 #subheading1 {
