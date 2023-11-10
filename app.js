@@ -426,9 +426,7 @@ app.post("/updatestatus/:documentID", async (req, res) => {
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
-  const user = users.find(
-    (u) => u.username === username && u.password === password
-  );
+  const user = users.find((u) => u.username === username && u.password === password);
 
   if (user) {
     // store user data in the session
@@ -545,6 +543,14 @@ app.get("/edit-paket", requireAuth, (req, res) => {
 
 app.get("/info-kontak", requireAuth, (req, res) => {
   res.render("admin/info-kontak");
+});
+
+app.get("/newsletter", requireAuth, (req, res) => {
+  res.render("admin/newsletter");
+});
+
+app.get("/tambah-newsletter", requireAuth, (req, res) => {
+  res.render("admin/tambah-newsletter");
 });
 
 app.listen(process.env.PORT || 2023, function () {
