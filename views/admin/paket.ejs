@@ -31,14 +31,20 @@
             <tr>
               <td><%= paket.nama %></td>
               <td>
-                <a href="#" class="btn btn-info d-fluid">
+                <a class="edit-item btn btn-info d-fluid"
+                  data-documentid="<%= paket.documentID %>"
+                  data-nama="<%= paket.nama %>"
+                  data-desc="<%= paket.desc %>"
+                  data-gambar="<%= JSON.stringify(paket.gambar) %>"
+                  data-maxHarga="<%= paket.maxHarga %>"
+                  data-minHarga="<%= paket.minHarga %>">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
-                    <path
-                      d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"
-                    />
+                      <path
+                        d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168l10-10zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207 11.207 2.5zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293l6.5-6.5zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325z"
+                      />
                   </svg>
                 </a>
-                <a href="#" class="btn btn-warning d-fluid">
+                <a class="delete-item btn btn-warning d-fluid" data-documentid="<%= paket.documentID %>" data-nama="<%= paket.nama %>">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                     <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z" />
                     <path
@@ -61,14 +67,22 @@
   document.querySelectorAll('.edit-item').forEach(function(element) {
     element.addEventListener('click', function() {
       const documentID = this.getAttribute('data-documentid');
-      const title = this.getAttribute('data-title');
-      const content = this.getAttribute('data-content');
-      const imageUrl = this.getAttribute('data-imageUrl');
-      const status = this.getAttribute('data-status');
-      const selectedBlog = { title, content, imageUrl, documentID, status };
-      const queryParams = new URLSearchParams(selectedBlog).toString();
-      const url = '/edit-berita?' + queryParams;
+      const namaPaket = this.getAttribute('data-nama');
+      const descPaket = this.getAttribute('data-desc');
+      const gambarPaket = this.getAttribute('data-gambar');
+      const minHarga = this.getAttribute('data-minHarga');
+      const maxHarga = this.getAttribute('data-maxHarga');
 
+      const queryParams = new URLSearchParams({
+        documentID,
+        namaPaket,
+        descPaket,
+        gambarPaket,
+        minHarga,
+        maxHarga,
+      }).toString();
+
+      const url = '/edit-paket?' + queryParams;
       window.location.href = url;
     });
   });
@@ -76,20 +90,22 @@
   document.querySelectorAll('.delete-item').forEach(function(element) {
     element.addEventListener('click', function() {
       const documentID = this.getAttribute('data-documentid');
-      if (confirm("Are you sure you want to delete " + documentID + " post?")) {
-        fetch(`/deletepost/${documentID}`, {
+      const namaPaket = this.getAttribute('data-nama');
+
+      if (confirm("Are you sure you want to delete '" + namaPaket + "' package?")) {
+        fetch(`/deleteItem/${documentID}`, {
           method: "POST",
         })
-          .then((response) => {
-            if (response.ok) {
-              location.reload();
-            } else {
-              console.error("Error deleting the post");
-            }
-          })
-          .catch((error) => {
-            console.error("Error deleting the post:", error);
-          });
+        .then((response) => {
+          if (response.ok) {
+            location.reload();
+          } else {
+            console.error("Error deleting the item");
+          }
+        })
+        .catch((error) => {
+          console.error("Error deleting the item:", error);
+        });
       }
     });
   });
