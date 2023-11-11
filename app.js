@@ -370,7 +370,6 @@ app.post("/updatepost", upload.single("newImage"), async (req, res) => {
 });
 
 app.post("/updateItem", upload.array("gambar"), async (req, res) => {
-  let imageUrls = [];
   const documentID = req.body.ID;
   const namaPaket = req.body.nama;
   const minHarga = req.body.minHarga;
@@ -379,39 +378,46 @@ app.post("/updateItem", upload.array("gambar"), async (req, res) => {
   const gambarFiles = req.files;
 
   try {
-    if (req.body.gambar && gambarFiles) {
-      const oldPost = await db.collection("Paket").doc(documentID).get();
-      if (oldPost.exists) {
-        const oldData = oldPost.data();
-        if (oldData.gambar) {
-          for (const oldImageUrl of oldData.gambar) {
-            const fileName = oldImageUrl.split("/").pop();
-            const storageFolder = `Paket/${documentID}/`;
-            const oldFile = storage.file(storageFolder + fileName);
-            await oldFile.delete();
-          }
-        }
-      }
+    let oldImageUrls = [];
+    let newImageUrls = [];
 
-      for (const file of gambarFiles) {
-        const imageBuffer = file.buffer;
-        const storageFolder = `Paket/${documentID}/`;
-        const fileName = file.originalname;
-
-        const fileRef = storage.file(storageFolder + fileName);
-
-        await fileRef.save(imageBuffer, {
-          metadata: {
-            contentType: file.mimetype,
-          },
-          predefinedAcl: "publicRead",
-        });
-
-        const imageUrl = `https://storage.googleapis.com/${storage.name}/${storageFolder}${fileName}`;
-        imageUrls.push(imageUrl);
+    // Get existing images
+    const oldPost = await db.collection("Paket").doc(documentID).get();
+    if (oldPost.exists) {
+      const oldData = oldPost.data();
+      if (oldData.gambar) {
+        oldImageUrls = oldData.gambar;
       }
     }
 
+    // Delete old images
+    for (const oldImageUrl of oldImageUrls) {
+      const fileName = oldImageUrl.split("/").pop();
+      const storageFolder = `Paket/${documentID}/`;
+      const oldFile = storage.file(storageFolder + fileName);
+      await oldFile.delete();
+    }
+
+    // Upload new images
+    for (const file of gambarFiles) {
+      const imageBuffer = file.buffer;
+      const storageFolder = `Paket/${documentID}/`;
+      const fileName = file.originalname;
+
+      const fileRef = storage.file(storageFolder + fileName);
+
+      await fileRef.save(imageBuffer, {
+        metadata: {
+          contentType: file.mimetype,
+        },
+        predefinedAcl: "publicRead",
+      });
+
+      const imageUrl = `https://storage.googleapis.com/${storage.name}/${storageFolder}${fileName}`;
+      newImageUrls.push(imageUrl);
+    }
+
+    // Update Firestore document
     const postRef = db.collection("Paket").doc(documentID);
     const timestamp = admin.firestore.FieldValue.serverTimestamp();
 
@@ -423,8 +429,12 @@ app.post("/updateItem", upload.array("gambar"), async (req, res) => {
       up_timestamp: timestamp,
     };
 
-    if (imageUrls.length > 0) {
-      updateData.gambar = imageUrls;
+    // Set the gambar field explicitly to the newImageUrls array
+    if (newImageUrls.length > 0) {
+      updateData.gambar = newImageUrls;
+    } else {
+      // If there are no new images, you might want to set gambar to an empty array
+      updateData.gambar = [];
     }
 
     await postRef.set(updateData, { merge: true });
