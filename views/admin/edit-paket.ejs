@@ -20,16 +20,12 @@
             <div class="col-12 col-sm-6 mb-4">
               <input required type="text" class="form-control border-2" placeholder="Nama Paket" style="height: 55px" name="nama" id="nama" value="<%= query.namaPaket %>"/>
             </div>
-            <div class="col-12 col-sm-6">
+            <div class="col-12 col-sm-6 mb-4">
               <input required type="text" class="form-control border-2" placeholder="Harga Terendah" style="height: 55px" name="minHarga" id="minHarga" value="<%= query.minHarga %>"/>
             </div>
-
-            <div class="col-12 col-sm-6">
-              <button type="button" class="btn btn-secondary mt-2" id="changeImageButton">Change Image</button>
-              <input type="file" class="form-control border-2 d-none" style="height: 55px" name="gambar" id="gambar" multiple/>
-              <button type="button" class="btn btn-secondary mt-2 d-none" id="cancelChangeImageButton">Cancel</button>
+            <div class="col-12 col-sm-6 mb-4">
+              <input type="file" class="form-control border-2" style="height: 55px" name="gambar" id="gambar" multiple/>
             </div>
-
             <div class="col-12 col-sm-6 mb-4">
               <input required type="text" class="form-control border-2" placeholder="Harga Tertinggi" style="height: 55px" name="maxHarga" id="maxHarga" value="<%= query.maxHarga %>"/>
             </div>
@@ -45,24 +41,3 @@
     </div>
   </div>
 </div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const changeImageButton = document.getElementById('changeImageButton');
-    const cancelChangeImageButton = document.getElementById('cancelChangeImageButton');
-    const gambarInput = document.getElementById('gambar');
-
-    changeImageButton.addEventListener('click', function () {
-      gambarInput.classList.toggle('d-none');
-      changeImageButton.classList.toggle('d-none');
-      cancelChangeImageButton.classList.toggle('d-none');
-    });
-
-    cancelChangeImageButton.addEventListener('click', function () {
-      gambarInput.value = ''; // Clear the selected file
-      gambarInput.classList.add('d-none');
-      cancelChangeImageButton.classList.add('d-none');
-      changeImageButton.classList.remove('d-none');
-    });
-  });
-</script>
