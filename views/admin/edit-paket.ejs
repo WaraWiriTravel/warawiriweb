@@ -12,22 +12,29 @@
   <div class="row justify-content-center">
     <div class="col-lg-12">
       <div class="text-center p-5">
-        <form method="POST" action="#" enctype="multipart/form-data">
+        <form method="POST" action="/updateItem" enctype="multipart/form-data">
           <div class="row g-3 mb-3">
             <div class="col-12 col-sm-6 mb-4">
-              <input required type="text" class="form-control border-2" placeholder="Nama Paket" style="height: 55px" name="nama" />
-            </div>
-            <div class="col-12 col-sm-6">
-              <input required type="text" class="form-control border-2" placeholder="Harga Terendah" style="height: 55px" name="hargarendah" />
-            </div>
-            <div class="col-12 col-sm-6">
-              <input required type="file" class="form-control border-2" style="height: 55px" name="gambar" />
+              <input required type="text" class="form-control border-2" style="height: 55px" id="ID" name="ID" value="<%= query.documentID %>" readonly/>
             </div>
             <div class="col-12 col-sm-6 mb-4">
-              <input required type="text" class="form-control border-2" placeholder="Harga Tertinggi" style="height: 55px" name=" hargatinggi" />
+              <input required type="text" class="form-control border-2" placeholder="Nama Paket" style="height: 55px" name="nama" id="nama" value="<%= query.namaPaket %>"/>
+            </div>
+            <div class="col-12 col-sm-6">
+              <input required type="text" class="form-control border-2" placeholder="Harga Terendah" style="height: 55px" name="minHarga" id="minHarga" value="<%= query.minHarga %>"/>
+            </div>
+
+            <div class="col-12 col-sm-6">
+              <button type="button" class="btn btn-secondary mt-2" id="changeImageButton">Change Image</button>
+              <input type="file" class="form-control border-2 d-none" style="height: 55px" name="gambar" id="gambar" multiple/>
+              <button type="button" class="btn btn-secondary mt-2 d-none" id="cancelChangeImageButton">Cancel</button>
+            </div>
+
+            <div class="col-12 col-sm-6 mb-4">
+              <input required type="text" class="form-control border-2" placeholder="Harga Tertinggi" style="height: 55px" name="maxHarga" id="maxHarga" value="<%= query.maxHarga %>"/>
             </div>
             <div class="col-12 col-sm-6 mb-4">
-              <textarea class="form-control" id="paket" name="paket" placeholder="Penjelasan Paket" required> </textarea>
+              <textarea class="form-control" id="desc" name="desc" placeholder="Penjelasan Paket" required><%= query.descPaket %></textarea>
             </div>
             <div class="col-12">
               <button type="submit" class="btn btn-primary">Simpan <i class="fa-regular fa-floppy-disk"></i></button>
@@ -38,3 +45,24 @@
     </div>
   </div>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const changeImageButton = document.getElementById('changeImageButton');
+    const cancelChangeImageButton = document.getElementById('cancelChangeImageButton');
+    const gambarInput = document.getElementById('gambar');
+
+    changeImageButton.addEventListener('click', function () {
+      gambarInput.classList.toggle('d-none');
+      changeImageButton.classList.toggle('d-none');
+      cancelChangeImageButton.classList.toggle('d-none');
+    });
+
+    cancelChangeImageButton.addEventListener('click', function () {
+      gambarInput.value = ''; // Clear the selected file
+      gambarInput.classList.add('d-none');
+      cancelChangeImageButton.classList.add('d-none');
+      changeImageButton.classList.remove('d-none');
+    });
+  });
+</script>

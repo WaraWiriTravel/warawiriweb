@@ -37,7 +37,7 @@ const users = [
 ];
 
 const requireAuth = (req, res, next) => {
-  if (!req.session.user) {
+  if (req.session.user) {
     return res.redirect("/login");
   }
   next();
@@ -369,6 +369,74 @@ app.post("/updatepost", upload.single("newImage"), async (req, res) => {
   }
 });
 
+app.post("/updateItem", upload.array("gambar"), async (req, res) => {
+  let imageUrls = [];
+  const documentID = req.body.ID;
+  const namaPaket = req.body.nama;
+  const minHarga = req.body.minHarga;
+  const maxHarga = req.body.maxHarga;
+  const desc = req.body.desc;
+  const gambarFiles = req.files;
+
+  try {
+    if (req.body.gambar && gambarFiles) {
+      const oldPost = await db.collection("Paket").doc(documentID).get();
+      if (oldPost.exists) {
+        const oldData = oldPost.data();
+        if (oldData.gambar) {
+          for (const oldImageUrl of oldData.gambar) {
+            const fileName = oldImageUrl.split("/").pop();
+            const storageFolder = `Paket/${documentID}/`;
+            const oldFile = storage.file(storageFolder + fileName);
+            await oldFile.delete();
+          }
+        }
+      }
+
+      for (const file of gambarFiles) {
+        const imageBuffer = file.buffer;
+        const storageFolder = `Paket/${documentID}/`;
+        const fileName = file.originalname;
+
+        const fileRef = storage.file(storageFolder + fileName);
+
+        await fileRef.save(imageBuffer, {
+          metadata: {
+            contentType: file.mimetype,
+          },
+          predefinedAcl: "publicRead",
+        });
+
+        const imageUrl = `https://storage.googleapis.com/${storage.name}/${storageFolder}${fileName}`;
+        imageUrls.push(imageUrl);
+      }
+    }
+
+    const postRef = db.collection("Paket").doc(documentID);
+    const timestamp = admin.firestore.FieldValue.serverTimestamp();
+
+    const updateData = {
+      nama: namaPaket,
+      minHarga: minHarga,
+      maxHarga: maxHarga,
+      desc: desc,
+      up_timestamp: timestamp,
+    };
+
+    if (imageUrls.length > 0) {
+      updateData.gambar = imageUrls;
+    }
+
+    await postRef.set(updateData, { merge: true });
+
+    console.log("Item updated successfully");
+    res.redirect("/paket");
+  } catch (error) {
+    console.error("Error updating item:", error);
+    res.status(500).send("Error updating item");
+  }
+});
+
 app.post("/deletepost/:documentID", async (req, res) => {
   try {
     const documentID = req.params.documentID;
@@ -387,6 +455,28 @@ app.post("/deletepost/:documentID", async (req, res) => {
     res.sendStatus(200);
   } catch (error) {
     console.error("Error deleting post:", error);
+    res.status(500).send("Error deleting post");
+  }
+});
+
+app.post("/deleteItem/:documentID", async (req, res) => {
+  try {
+    const documentID = req.params.documentID;
+
+    const paketDoc = await db.collection("Paket").doc(documentID).get();
+    if (!paketDoc.exists) {
+      res.status(404).send("Item not found");
+      return;
+    }
+
+    const storageFolder = `Paket/${documentID}/`;
+    await storage.deleteFiles({ prefix: storageFolder });
+
+    await db.collection("Paket").doc(documentID).delete();
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error deleting item:", error);
     res.status(500).send("Error deleting post");
   }
 });
@@ -538,7 +628,8 @@ app.get("/tambah-paket", requireAuth, (req, res) => {
 });
 
 app.get("/edit-paket", requireAuth, (req, res) => {
-  res.render("admin/edit-paket");
+  const query = req.query;
+  res.render("admin/edit-paket", { query });
 });
 
 app.get("/info-kontak", requireAuth, (req, res) => {
