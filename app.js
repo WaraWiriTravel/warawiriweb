@@ -114,6 +114,14 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
+app.get("/paket", (req, res) => {
+  res.render("packet-pricing");
+});
+
+app.get("/paket-detail", (req, res) => {
+  res.render("packet-pricing-details");
+});
+
 //test untuk database, tambah baris baru diatas ini
 app.post("/createpost", upload.single("image"), (req, res) => {
   const title = req.body.title;
