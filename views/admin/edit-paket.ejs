@@ -3,9 +3,9 @@
 
 <div class="container-fluid my-5 px-5">
   <div class="row">
-    <div class="col"><h1 class="mb-4 text-gray-800">Paket</h1></div>
+    <div class="col"><h3 class="mb-4 text-gray-800">Paket</h3></div>
     <div class="col">
-      <h1 class="mb-4 text-gray-800">Edit Paket</h1>
+      <h3 class="mb-4 text-gray-800">Edit Paket</h3>
     </div>
   </div>
 
@@ -15,19 +15,19 @@
         <form method="POST" action="/updateItem" enctype="multipart/form-data">
           <div class="row g-3 mb-3">
             <div class="col-12 col-sm-6 mb-4">
-              <input required type="text" class="form-control border-2" style="height: 55px" id="ID" name="ID" value="<%= query.documentID %>" readonly/>
+              <input required type="text" class="form-control border-2" style="height: 55px" id="ID" name="ID" value="<%= query.documentID %>" readonly />
             </div>
             <div class="col-12 col-sm-6 mb-4">
-              <input required type="text" class="form-control border-2" placeholder="Nama Paket" style="height: 55px" name="nama" id="nama" value="<%= query.namaPaket %>"/>
+              <input required type="text" class="form-control border-2" placeholder="Nama Paket" style="height: 55px" name="nama" id="nama" value="<%= query.namaPaket %>" />
             </div>
             <div class="col-12 col-sm-6 mb-4">
-              <input required type="text" class="form-control border-2" placeholder="Harga Terendah" style="height: 55px" name="minHarga" id="minHarga" value="<%= query.minHarga %>"/>
+              <input required type="text" class="form-control border-2" placeholder="Harga Terendah" style="height: 55px" name="minHarga" id="minHarga" value="<%= query.minHarga %>" />
             </div>
             <div class="col-12 col-sm-6 mb-4">
-              <input type="file" class="form-control border-2" style="height: 55px" name="gambar" id="gambar" multiple/>
+              <input type="file" class="form-control border-2" style="height: 55px" name="gambar" id="gambar" multiple />
             </div>
             <div class="col-12 col-sm-6 mb-4">
-              <input required type="text" class="form-control border-2" placeholder="Harga Tertinggi" style="height: 55px" name="maxHarga" id="maxHarga" value="<%= query.maxHarga %>"/>
+              <input required type="text" class="form-control border-2" placeholder="Harga Tertinggi" style="height: 55px" name="maxHarga" id="maxHarga" value="<%= query.maxHarga %>" />
             </div>
             <div class="col-12 col-sm-6 mb-4">
               <textarea class="form-control" id="desc" name="desc" placeholder="Penjelasan Paket" required><%= query.descPaket %></textarea>
