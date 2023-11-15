@@ -4,6 +4,10 @@ const bodyParser = require("body-parser");
 const admin = require("firebase-admin");
 const path = require("path");
 const multer = require("multer");
+const crypto = require('crypto');
+
+require("dotenv").config();
+const nodemailer = require("nodemailer");
 
 const serviceAccount = require("./warawiriweb-alphetor-firebase-adminsdk-g58h2-354dad6595.json");
 
@@ -45,6 +49,22 @@ const requireAuth = (req, res, next) => {
 
 const storageMulter = multer.memoryStorage();
 const upload = multer({ storage: storageMulter });
+
+// create reusable transporter using the default SMTP transport
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: "warawiribusiness@gmail.com",
+    pass: "zyyd xjsw ipkd wlsz",
+  },
+});
+
+function generateUniqueToken() {
+  return crypto.randomBytes(32).toString('hex');
+}
 
 app.set("view engine", "ejs");
 
@@ -188,6 +208,106 @@ app.get("/paket-detail-:nama", (req, res) => {
     .catch((error) => {
       res.send("Error: " + error);
     });
+});
+
+app.post("/daftar", async (req, res) => {
+  try {
+    const email = req.body.email;
+
+    const emailsRef = db.collection("Emails");
+
+    const existingEmail = await emailsRef.where("email", "==", email).get();
+
+    if (!existingEmail.empty) {
+      return res.redirect("/blog");
+    }
+
+    const timestamp = admin.firestore.FieldValue.serverTimestamp();
+    
+    const unsubscribeToken = generateUniqueToken();
+
+    await emailsRef.add({
+      email: email,
+      timestamp: timestamp,
+      unsubscribeToken: unsubscribeToken,
+    });
+
+    res.redirect("/blog");
+  } catch (error) {
+    console.error("Error adding email:", error);
+    res.status(500).send("Error adding email");
+  }
+});
+
+app.post("/sendNewsletter", async (req, res) => {
+  try {
+    const subject = req.body.subject;
+    const body = req.body.body;
+    let linkType;
+    let link;
+
+    if (req.body.linkType !== null && req.body.link !== null) {
+      linkType = req.body.linkType;
+      link = req.body.link;
+    }
+
+    const emailsSnapshot = await db.collection("Emails").get();
+    const emails = [];
+    
+    emailsSnapshot.forEach((doc) => {
+      const data = doc.data();
+      emails.push({
+        email: data.email,
+        unsubscribeToken: data.unsubscribeToken,
+      });
+    });
+
+    let mailOptions;
+
+    for (const recipient of emails) {
+      if (linkType === "paket") {
+        const paketLink = `http://localhost:2023/paket-detail-${encodeURIComponent(link)}`;
+        mailOptions = {
+          from: {
+            name: "Shercosta",
+            address: "warawiribusiness@gmail.com",
+          },
+          to: recipient.email,
+          subject: subject,
+          html: `<p>${body}</p><p style="margin-top: 16px;"><a href="${paketLink}">Lihat paket</a></p><p style="margin-top: 16px;"><a href="http://localhost:2023/unsubscribe/${recipient.unsubscribeToken}">Unsubscribe dari newsletter</a></p>`,
+        };
+      } else if (linkType === "blog") {
+        const blogLink = `http://localhost:2023/blog-detail-${encodeURIComponent(link)}`;
+        mailOptions = {
+          from: {
+            name: "Shercosta",
+            address: "warawiribusiness@gmail.com",
+          },
+          to: recipient.email,
+          subject: subject,
+          html: `<p>${body}</p><p style="margin-top: 16px;"><a href="${blogLink}">Lihat blog</a></p><p style="margin-top: 16px;"><a href="http://localhost:2023/unsubscribe/${recipient.unsubscribeToken}">Unsubscribe dari newsletter</a></p>`,
+        };
+      } else {
+        mailOptions = {
+          from: {
+            name: "Shercosta",
+            address: "warawiribusiness@gmail.com",
+          },
+          to: recipient.email,
+          subject: subject,
+          html: `<p>${body}</p><p style="margin-top: 16px;"><a href="http://localhost:2023/unsubscribe/${recipient.unsubscribeToken}">Unsubscribe dari newsletter</a></p>`,
+        };
+      }
+
+      await transporter.sendMail(mailOptions);
+    }
+
+    console.log("Email has been sent successfully");
+    res.redirect("/newsletter");
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res.status(500).send("Error sending email");
+  }
 });
 
 app.post("/createpost", upload.single("gambar"), (req, res) => {
@@ -491,6 +611,45 @@ app.post("/deleteItem/:documentID", async (req, res) => {
   }
 });
 
+app.post("/deleteEmail/:documentID", async (req, res) => {
+  try {
+    const documentID = req.params.documentID;
+
+    const emailDoc = await db.collection("Emails").doc(documentID).get();
+    if (!emailDoc.exists) {
+      res.status(404).send("Email not found");
+      return;
+    }
+
+    await db.collection("Emails").doc(documentID).delete();
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error unsubscribing email:", error);
+    res.status(500).send("Error unsubscribing email");
+  }
+});
+
+app.get("/unsubscribe/:token", async (req, res) => {
+  try {
+    const token = req.params.token;
+
+    const emailDoc = await db.collection("Emails").where("unsubscribeToken", "==", token).get();
+
+    if (emailDoc.empty) {
+      res.status(404).send("Invalid unsubscribe token");
+      return;
+    }
+
+    await emailDoc.docs[0].ref.delete();
+
+    res.send("Unsubscribe successful");
+  } catch (error) {
+    console.error("Error processing unsubscribe request:", error);
+    res.status(500).send("Error processing unsubscribe request");
+  }
+});
+
 app.post("/updatestatus/:documentID", async (req, res) => {
   const documentID = req.params.documentID;
   const status = req.query.status;
@@ -647,11 +806,45 @@ app.get("/info-kontak", requireAuth, (req, res) => {
 });
 
 app.get("/newsletter", requireAuth, (req, res) => {
-  res.render("admin/newsletter");
+  db.collection("Emails")
+    .get()
+    .then((snapshot) => {
+      const emails = [];
+      snapshot.forEach((doc) => {
+        emails.push({
+          documentID: doc.id,
+          ...doc.data(),
+        });
+      });
+
+      res.render("admin/newsletter", { emails: emails });
+    })
+    .catch((error) => {
+      res.send("Error: " + error);
+    });
 });
 
-app.get("/tambah-newsletter", requireAuth, (req, res) => {
-  res.render("admin/tambah-newsletter");
+app.get("/tambah-newsletter", requireAuth, async (req, res) => {
+  try {
+    const [blogsSnapshot, paketSnapshot] = await Promise.all([
+      db.collection("Blogs").get(),
+      db.collection("Paket").get(),
+    ]);
+
+    const blogs = blogsSnapshot.docs.map((doc) => ({
+      documentID: doc.id,
+      ...doc.data(),
+    }));
+
+    const paket = paketSnapshot.docs.map((doc) => ({
+      documentID: doc.id,
+      ...doc.data(),
+    }));
+
+    res.render("admin/tambah-newsletter", { blogs, paket });
+  } catch (error) {
+    res.status(500).send("Error: " + error);
+  }
 });
 
 app.listen(process.env.PORT || 2023, function () {
