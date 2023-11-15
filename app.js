@@ -1,12 +1,13 @@
+require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const admin = require("firebase-admin");
 const path = require("path");
 const multer = require("multer");
-const crypto = require('crypto');
+const crypto = require("crypto");
+const md5 = require("md5");
 
-require("dotenv").config();
 const nodemailer = require("nodemailer");
 
 const serviceAccount = require("./warawiriweb-alphetor-firebase-adminsdk-g58h2-354dad6595.json");
@@ -25,20 +26,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // create session middleware
 app.use(
   session({
-    secret: "not_yet_environmentized",
+    secret: "not_yet_environmentized", // move to .env
     resave: false,
     saveUninitialized: false,
   })
 );
-
-// temporary user for auth checking => PINDAHIN KE DATABASE NANTI
-const users = [
-  {
-    id: 1,
-    username: "admin",
-    password: "admin",
-  },
-];
 
 const requireAuth = (req, res, next) => {
   if (!req.session.user) {
@@ -57,13 +49,13 @@ const transporter = nodemailer.createTransport({
   port: 587,
   secure: false, // true for 465, false for other ports
   auth: {
-    user: "warawiribusiness@gmail.com",
-    pass: "zyyd xjsw ipkd wlsz",
+    user: "warawiribusiness@gmail.com", // move to .env
+    pass: "zyyd xjsw ipkd wlsz", // move to .env
   },
 });
 
 function generateUniqueToken() {
-  return crypto.randomBytes(32).toString('hex');
+  return crypto.randomBytes(32).toString("hex");
 }
 
 app.set("view engine", "ejs");
@@ -80,7 +72,7 @@ app.get("/", (req, res) => {
         if (data.status === "on") {
           highlightBlogs.push({
             documentID: doc.id,
-          ...data,
+            ...data,
           });
         } else {
           blogs.push({
@@ -94,7 +86,7 @@ app.get("/", (req, res) => {
       if (x !== 0) {
         highlightBlogs.push(...blogs.slice(0, x));
         blogs.splice(0, x);
-      };
+      }
 
       res.render("home", { highlightBlogs: highlightBlogs });
     })
@@ -223,7 +215,7 @@ app.post("/daftar", async (req, res) => {
     }
 
     const timestamp = admin.firestore.FieldValue.serverTimestamp();
-    
+
     const unsubscribeToken = generateUniqueToken();
 
     await emailsRef.add({
@@ -253,7 +245,7 @@ app.post("/sendNewsletter", async (req, res) => {
 
     const emailsSnapshot = await db.collection("Emails").get();
     const emails = [];
-    
+
     emailsSnapshot.forEach((doc) => {
       const data = doc.data();
       emails.push({
@@ -266,22 +258,26 @@ app.post("/sendNewsletter", async (req, res) => {
 
     for (const recipient of emails) {
       if (linkType === "paket") {
-        const paketLink = `http://localhost:2023/paket-detail-${encodeURIComponent(link)}`;
+        const paketLink = `http://localhost:2023/paket-detail-${encodeURIComponent(
+          link
+        )}`;
         mailOptions = {
           from: {
-            name: "Shercosta",
-            address: "warawiribusiness@gmail.com",
+            name: "Wara Wiri Tour",
+            address: "warawiribusiness@gmail.com", // move to .env
           },
           to: recipient.email,
           subject: subject,
           html: `<p>${body}</p><p style="margin-top: 16px;"><a href="${paketLink}">Lihat paket</a></p><p style="margin-top: 16px;"><a href="http://localhost:2023/unsubscribe/${recipient.unsubscribeToken}">Unsubscribe dari newsletter</a></p>`,
         };
       } else if (linkType === "blog") {
-        const blogLink = `http://localhost:2023/blog-detail-${encodeURIComponent(link)}`;
+        const blogLink = `http://localhost:2023/blog-detail-${encodeURIComponent(
+          link
+        )}`;
         mailOptions = {
           from: {
-            name: "Shercosta",
-            address: "warawiribusiness@gmail.com",
+            name: "Wara Wiri Tour",
+            address: "warawiribusiness@gmail.com", // move to .env
           },
           to: recipient.email,
           subject: subject,
@@ -290,8 +286,8 @@ app.post("/sendNewsletter", async (req, res) => {
       } else {
         mailOptions = {
           from: {
-            name: "Shercosta",
-            address: "warawiribusiness@gmail.com",
+            name: "Wara Wiri Tour",
+            address: "warawiribusiness@gmail.com", // move to .env
           },
           to: recipient.email,
           subject: subject,
@@ -314,7 +310,7 @@ app.post("/createpost", upload.single("gambar"), (req, res) => {
   const title = req.body.judul;
   const content = req.body.Berita;
   const imageBuffer = req.file.buffer;
-  const isHighlight = req.body.status === undefined ? 'off' : req.body.status;
+  const isHighlight = req.body.status === undefined ? "off" : req.body.status;
 
   const postRef = db.collection("Blogs").doc();
   const documentID = postRef.id;
@@ -430,7 +426,7 @@ app.post("/updatepost", upload.single("newImage"), async (req, res) => {
   const title = req.body.judul;
   const content = req.body.Berita;
   const documentID = req.body.ID;
-  const isHighlight = req.body.status === undefined ? 'off' : req.body.status;
+  const isHighlight = req.body.status === undefined ? "off" : req.body.status;
 
   try {
     if (req.body.newImage) {
@@ -634,7 +630,10 @@ app.get("/unsubscribe/:token", async (req, res) => {
   try {
     const token = req.params.token;
 
-    const emailDoc = await db.collection("Emails").where("unsubscribeToken", "==", token).get();
+    const emailDoc = await db
+      .collection("Emails")
+      .where("unsubscribeToken", "==", token)
+      .get();
 
     if (emailDoc.empty) {
       res.status(404).send("Invalid unsubscribe token");
@@ -658,9 +657,9 @@ app.post("/updatestatus/:documentID", async (req, res) => {
   const postRef = db.collection("Blogs").doc(documentID);
 
   return postRef
-    .update({ 
+    .update({
       status: status,
-      up_timestamp: timestamp, 
+      up_timestamp: timestamp,
     })
     .then(async () => {
       const querySnapshot = await db
@@ -672,7 +671,7 @@ app.post("/updatestatus/:documentID", async (req, res) => {
       if (querySnapshot.size > 3) {
         const oldestBlog = querySnapshot.docs[0];
         await oldestBlog.ref.update({ status: "off" });
-      } 
+      }
 
       res.sendStatus(200);
     })
@@ -682,14 +681,28 @@ app.post("/updatestatus/:documentID", async (req, res) => {
     });
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
-  const user = users.find((u) => u.username === username && u.password === password);
+  let user = [];
+  await db
+    .collection("User")
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
+        user.push({
+          ...doc.data(),
+        });
+      });
+    });
 
-  if (user) {
+  const activeUser = user.find(
+    (u) => u.username === username && u.password === md5(password)
+  );
+
+  if (activeUser) {
     // store user data in the session
-    req.session.user = user;
+    req.session.user = activeUser;
     res.redirect("/home");
   } else {
     res.redirect("/login");
@@ -722,7 +735,7 @@ app.get("/home", requireAuth, (req, res) => {
         if (data.status === "on") {
           highlightBlogs.push({
             documentID: doc.id,
-          ...data,
+            ...data,
           });
         } else {
           blogs.push({
@@ -736,7 +749,7 @@ app.get("/home", requireAuth, (req, res) => {
       if (x !== 0) {
         highlightBlogs.push(...blogs.slice(0, x));
         blogs.splice(0, x);
-      };
+      }
 
       res.render("admin/home", { highlightBlogs: highlightBlogs });
     })
