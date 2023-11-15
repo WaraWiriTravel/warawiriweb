@@ -5,34 +5,31 @@
 
 <!-- Halaman Blog -->
 <style>
-    /* Gaya CSS untuk tombol bulat */
-    .contact-button {
-      position: fixed;
-      bottom: 10px;
-      right: 50px;
-      width: 60px;
-      height: 60px;
-      background-color: #25d366;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 60px;
-      z-index: 999;
-    }
-  </style>
+  /* Gaya CSS untuk tombol bulat */
+  .contact-button {
+    position: fixed;
+    bottom: 10px;
+    right: 50px;
+    width: 60px;
+    height: 60px;
+    background-color: #25d366;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 60px;
+    z-index: 999;
+  }
+</style>
 <section>
   <div class="container">
-    <div class="row mb-3 text-center">
+    <div class="row mb-3 mt-4 text-center">
       <div class="col">
-        <h4>Paket Tour Pricing</h4>
+        <h2>Paket Tour Pricing</h2>
       </div>
     </div>
     <div class="row justify-content-center">
       <% pakets.forEach(paket => { %>
       <div class="col-md-6 mb-3">
-        <a
-          href="/paket-detail-<%= paket.nama %>"
-          class="text-reset text-decoration-none"
-        >
+        <a href="/paket-detail-<%= paket.nama %>" class="text-reset text-decoration-none">
           <div class="card">
             <h5 class="text-center"><%= paket.nama %></h5>
             <img src="<%= paket.gambar[0] %>"" class="card-img-top" />

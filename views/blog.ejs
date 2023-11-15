@@ -8,23 +8,16 @@
   <div class="container">
     <div class="row mb-3">
       <div class="col">
-        <h4 class="text-center">Apa yang baru dari Wara Wiri Tour ?</h4>
+        <h2 class="text-center">Apa yang baru dari Wara Wiri Tour ?</h2>
       </div>
     </div>
-    <a
-      href="/blog-detail-<%= highlightBlog.title %>"
-      class="text-reset text-decoration-none"
-    >
+    <a href="/blog-detail-<%= highlightBlog.title %>" class="text-reset text-decoration-none">
       <div class="row mb-3">
         <div class="col-md-4">
-          <img
-            class="img-fluid rounded-4 mx-auto d-block"
-            src="<%= highlightBlog.imageUrl %>"
-            alt=""
-          />
+          <img class="img-fluid rounded-4 mx-auto d-block" src="<%= highlightBlog.imageUrl %>" alt="" />
         </div>
         <div class="col-md-8">
-          <h5><%= highlightBlog.title %></h5>
+          <h3><%= highlightBlog.title %></h3>
           <p><%= highlightBlog.content.substring(0, 100) %>...</p>
         </div>
       </div></a
@@ -43,16 +36,13 @@
   <div class="container">
     <div class="row mb-3 text-center">
       <div class="col">
-        <h4>Informasi Lainnya</h4>
+        <h2>Informasi Lainnya</h2>
       </div>
     </div>
     <div class="row justify-content-center">
       <% Blogs.forEach(blog => { %>
       <div class="col-md-4 mb-3">
-        <a
-          href="/blog-detail-<%= blog.title %>"
-          class="text-reset text-decoration-none"
-        >
+        <a href="/blog-detail-<%= blog.title %>" class="text-reset text-decoration-none">
           <div class="card">
             <img src="<%= blog.imageUrl %>" class="card-img-top" />
             <div class="card-body">
@@ -76,10 +66,7 @@
 <section id="pengalaman">
   <div class="container pb-4">
     <div class="row text-center justify-content-center">
-      <h4 class="mb-4">
-        Pastikan anda mendapat informasi terkini untuk pengalaman tidak
-        terlupakan !
-      </h4>
+      <h4 class="mb-4">Pastikan anda mendapat informasi terkini untuk pengalaman tidak terlupakan !</h4>
       <form method="POST" action="/daftar">
         <div class="row g-3 justify-content-center">
           <div class="col-12 col-sm-6">
@@ -94,9 +81,7 @@
             />
           </div>
           <div class="col-12 col-sm-3">
-            <button class="btn btn-primary w-50 py-3" type="submit">
-              Submit
-            </button>
+            <button class="btn btn-primary w-50 py-3" type="submit">Submit</button>
           </div>
         </div>
       </form>
