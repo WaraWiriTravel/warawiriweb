@@ -27,6 +27,11 @@ h5 {
   font-weight: 400; /* Regular */
 }
 
+pre {
+  font-family: "Roboto", sans-serif;
+  white-space: pre-wrap;
+}
+
 #subheading1 {
   font-family: "Roboto", sans-serif;
   font-size: 28px;
