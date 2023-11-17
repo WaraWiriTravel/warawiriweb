@@ -33,7 +33,7 @@ app.use(
 );
 
 const requireAuth = (req, res, next) => {
-  if (!req.session.user) {
+  if (req.session.user) {
     return res.redirect("/login");
   }
   next();
@@ -146,11 +146,29 @@ app.get("/blog-detail-:title", (req, res) => {
 });
 
 app.get("/faq", (req, res) => {
-  res.render("faq");
+  db.collection("Contact")
+    .get()
+    .then((snapshot) => {
+      const kontak = snapshot.docs[0].data()
+
+      res.render("faq", { kontak: kontak });
+    })
+    .catch((error) => {
+      res.send("Error: " + error);
+    });
 });
 
 app.get("/contact", (req, res) => {
-  res.render("contact");
+  db.collection("Contact")
+    .get()
+    .then((snapshot) => {
+      const kontak = snapshot.docs[0].data()
+
+      res.render("contact", { kontak: kontak });
+    })
+    .catch((error) => {
+      res.send("Error: " + error);
+    });
 });
 
 app.get("/login", (req, res) => {
@@ -158,48 +176,51 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/pricing", (req, res) => {
+  let kontak;
+  let pakets = [];
+
   db.collection("Paket")
     .orderBy("up_timestamp", "desc")
     .get()
     .then((snapshot) => {
-      const paket = [];
       snapshot.forEach((doc) => {
-        paket.push({
+        pakets.push({
           documentID: doc.id,
           ...doc.data(),
         });
       });
 
-      res.render("packet-pricing", { pakets: paket });
+      return db.collection("Contact").get();
+    })
+    .then((contactSnapshot) => {
+      kontak = contactSnapshot.docs[0].data();
+
+      res.render("packet-pricing", { pakets: pakets, kontak: kontak });
     })
     .catch((error) => {
       res.send("Error: " + error);
     });
 });
 
-app.get("/paket-detail-:nama", (req, res) => {
+app.get("/paket-detail-:nama", async (req, res) => {
   const nama = req.params.nama;
-  let paketData;
 
-  db.collection("Paket")
-    .get()
-    .then((snapshot) => {
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data.nama === nama) {
-          paketData = data;
-        }
-      });
+  try {
+    const paketQuery = await db.collection("Paket").where("nama", "==", nama).get();
 
-      if (paketData) {
-        res.render("packet-pricing-details", { paket: paketData });
-      } else {
-        res.send("Item not found");
-      }
-    })
-    .catch((error) => {
-      res.send("Error: " + error);
-    });
+    if (paketQuery.empty) {
+      return res.send("Item not found");
+    }
+
+    const paketData = paketQuery.docs[0].data();
+
+    const contactQuery = await db.collection("Contact").get();
+    const kontak = contactQuery.docs[0].data();
+
+    res.render("packet-pricing-details", { paket: paketData, kontak: kontak });
+  } catch (error) {
+    res.send("Error: " + error);
+  }
 });
 
 app.post("/daftar", async (req, res) => {
@@ -563,6 +584,26 @@ app.post("/updateItem", upload.array("gambar"), async (req, res) => {
   }
 });
 
+app.post("/updateContact", requireAuth, async (req, res) => {
+  try {
+    const newEmail = req.body.email;
+    const newNoTelp = req.body.noTelp;
+
+    const contactRef = db.collection("Contact").doc("TcFCStsO4m62PHisotDW");
+
+    await contactRef.update({
+      email: newEmail,
+      noTelp: newNoTelp,
+    });
+
+    console.log("Contact updated successfully");
+    res.redirect("/info-kontak"); 
+  } catch (error) {
+    console.error("Error updating contact:", error);
+    res.status(500).send("Error updating contact");
+  }
+});
+
 app.post("/deletepost/:documentID", async (req, res) => {
   try {
     const documentID = req.params.documentID;
@@ -815,7 +856,16 @@ app.get("/edit-paket", requireAuth, (req, res) => {
 });
 
 app.get("/info-kontak", requireAuth, (req, res) => {
-  res.render("admin/info-kontak");
+  db.collection("Contact")
+    .get()
+    .then((snapshot) => {
+      const kontak = snapshot.docs[0].data()
+
+      res.render("admin/info-kontak", { kontak: kontak });
+    })
+    .catch((error) => {
+      res.send("Error: " + error);
+    });
 });
 
 app.get("/newsletter", requireAuth, (req, res) => {
