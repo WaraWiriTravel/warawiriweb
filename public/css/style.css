@@ -49,11 +49,11 @@ h5 {
 }
 
 .nav-link {
-  color: #082219;
+  color: black !important;
 }
 
 .nav-link:hover {
-  color: #082219;
+  color: #0d0d0d;
   text-decoration: underline;
 }
 
@@ -64,7 +64,7 @@ section {
 #blog,
 #pengalaman,
 #blog-detail {
-  background-color: #e2edff;
+  background-color: #fdda84;
   padding-top: 3rem;
 }
 
