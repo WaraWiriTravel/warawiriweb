@@ -101,6 +101,8 @@ section {
 
 .carousel-inner img {
   object-fit: cover;
+  width: 70%;
+  aspect-ratio: 3/2;
 }
 
 .slider {

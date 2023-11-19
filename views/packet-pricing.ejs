@@ -32,11 +32,11 @@
         <a href="/paket-detail-<%= paket.nama %>" class="text-reset text-decoration-none">
           <div class="card">
             <h5 class="text-center"><%= paket.nama %></h5>
-            <img src="<%= paket.gambar[0] %>"" class="card-img-top" />
+            <img src="<%= paket.gambar[0] %>" class="card-img-top" />
             <div class="card-body">
               <p class="card-text">Harga Rp.<%= paket.minHarga %>/10 orang</p>
               <p class="card-text">Harga Rp.<%= paket.maxHarga %>/orang</p>
-              <p class="card-text"><%= paket.desc %></p>
+              <p class="card-text"><%= paket.desc.substring(0, 200) %>...</p>
             </div>
           </div></a
         >
