@@ -68,6 +68,12 @@ section {
   padding-top: 3rem;
 }
 
+#blog-detail img {
+  width: 50%;
+  aspect-ratio: 3/2;
+  object-fit: cover;
+}
+
 #pengalaman {
   height: 70vh;
 }
@@ -86,15 +92,14 @@ section {
   overflow: hidden;
 }
 
-.card img {
+.card img,
+#blog img {
   width: 100%;
   aspect-ratio: 3/2;
   object-fit: cover;
 }
 
 .carousel-inner img {
-  width: 100%;
-  aspect-ratio: 3/2;
   object-fit: cover;
 }
 
