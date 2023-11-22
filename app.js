@@ -149,7 +149,7 @@ app.get("/faq", (req, res) => {
   db.collection("Contact")
     .get()
     .then((snapshot) => {
-      const kontak = snapshot.docs[0].data()
+      const kontak = snapshot.docs[0].data();
 
       res.render("faq", { kontak: kontak });
     })
@@ -162,7 +162,7 @@ app.get("/contact", (req, res) => {
   db.collection("Contact")
     .get()
     .then((snapshot) => {
-      const kontak = snapshot.docs[0].data()
+      const kontak = snapshot.docs[0].data();
 
       res.render("contact", { kontak: kontak });
     })
@@ -206,7 +206,10 @@ app.get("/paket-detail-:nama", async (req, res) => {
   const nama = req.params.nama;
 
   try {
-    const paketQuery = await db.collection("Paket").where("nama", "==", nama).get();
+    const paketQuery = await db
+      .collection("Paket")
+      .where("nama", "==", nama)
+      .get();
 
     if (paketQuery.empty) {
       return res.send("Item not found");
@@ -289,7 +292,153 @@ app.post("/sendNewsletter", async (req, res) => {
           },
           to: recipient.email,
           subject: subject,
-          html: `<p>${body}</p><p style="margin-top: 16px;"><a href="${paketLink}">Lihat paket</a></p><p style="margin-top: 16px;"><a href="http://localhost:2023/unsubscribe/${recipient.unsubscribeToken}">Unsubscribe dari newsletter</a></p>`,
+          html: `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="img/warawiri-logo.svg" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <title>News Letter</title>
+
+    <style>
+      .bn6 {
+        cursor: pointer;
+        outline: none;
+        border: none;
+        background-color: #f71707;
+        padding: 0.3em 1.2em;
+        border-radius: 30px;
+        font-size: 1.3rem;
+        font-weight: 550;
+        color: #ffffff;
+        background-size: 100% 100%;
+        box-shadow: 0 0 0 4px #e6564c inset;
+      }
+
+      .bn6:hover {
+        background-image: linear-gradient(
+          55deg,
+          transparent 10%,
+          #eb938d 10% 20%,
+          transparent 20% 30%,
+          #eb938d 30% 40%,
+          transparent 40% 50%,
+          #eb938d 50% 60%,
+          transparent 60% 70%,
+          #eb938d 70% 80%,
+          transparent 80% 90%,
+          #eb938d 90% 100%
+        );
+        animation: background 3s linear infinite;
+      }
+
+      .bn39 {
+        background-image: linear-gradient(135deg, #008aff, #86d472);
+        border-radius: 6px;
+        box-sizing: border-box;
+        color: #ffffff;
+        display: block;
+        height: 50px;
+        font-size: 1.4em;
+        font-weight: 600;
+        padding: 4px;
+        position: relative;
+        text-decoration: none;
+        width: 7em;
+        z-index: 2;
+      }
+
+      .bn39:hover {
+        color: #fff;
+      }
+
+      .bn39 .bn39span {
+        align-items: center;
+        background: #0e0e10;
+        border-radius: 6px;
+        display: flex;
+        justify-content: center;
+        height: 100%;
+        transition: background 0.5s ease;
+        width: 100%;
+      }
+
+      .bn39:hover .bn39span {
+        background: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Start Navbar -->
+    <nav
+      class="shadow-sm navbar navbar-expand-lg navbar-light justify-content-center"
+    >
+      <div class="container">
+        <a href="/">
+          <img src="" alt="Wara Wiri Travel" width="100" />
+        </a>
+        <a class="navbar-brand" href="#"> <h1>Tour & Travel Wara Wiri</h1></a>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+    <!-- Body -->
+    <section>
+      <div class="container">
+        <div class="row">
+          <div><h1 class="text-center">Judul</h1></div>
+        </div>
+
+        <div class="row">
+          <p>
+            ${body}
+          </p>
+          <div class="col mb-3">
+            <a class="bn39" href="${paketLink}"
+              ><span class="bn39span">For More Info</span></a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- end body -->
+
+    <!-- start footer -->
+    <div
+      class="shadow-sm container-fluid text-dark footer pt-5 mt-5 wow fadeIn"
+      data-wow-delay="0.1s"
+    >
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 col-md-6">
+            <h4 class="mb-4">PT Wara Wiri</h4>
+          </div>
+          <div class="col-lg-6 col-md-6 text-end">
+            <a href="http://localhost:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6">Unsubcribe</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end footer -->
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>`,
         };
       } else if (linkType === "blog") {
         const blogLink = `http://localhost:2023/blog-detail-${encodeURIComponent(
@@ -302,7 +451,153 @@ app.post("/sendNewsletter", async (req, res) => {
           },
           to: recipient.email,
           subject: subject,
-          html: `<p>${body}</p><p style="margin-top: 16px;"><a href="${blogLink}">Lihat blog</a></p><p style="margin-top: 16px;"><a href="http://localhost:2023/unsubscribe/${recipient.unsubscribeToken}">Unsubscribe dari newsletter</a></p>`,
+          html: `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="img/warawiri-logo.svg" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <title>News Letter</title>
+
+    <style>
+      .bn6 {
+        cursor: pointer;
+        outline: none;
+        border: none;
+        background-color: #f71707;
+        padding: 0.3em 1.2em;
+        border-radius: 30px;
+        font-size: 1.3rem;
+        font-weight: 550;
+        color: #ffffff;
+        background-size: 100% 100%;
+        box-shadow: 0 0 0 4px #e6564c inset;
+      }
+
+      .bn6:hover {
+        background-image: linear-gradient(
+          55deg,
+          transparent 10%,
+          #eb938d 10% 20%,
+          transparent 20% 30%,
+          #eb938d 30% 40%,
+          transparent 40% 50%,
+          #eb938d 50% 60%,
+          transparent 60% 70%,
+          #eb938d 70% 80%,
+          transparent 80% 90%,
+          #eb938d 90% 100%
+        );
+        animation: background 3s linear infinite;
+      }
+
+      .bn39 {
+        background-image: linear-gradient(135deg, #008aff, #86d472);
+        border-radius: 6px;
+        box-sizing: border-box;
+        color: #ffffff;
+        display: block;
+        height: 50px;
+        font-size: 1.4em;
+        font-weight: 600;
+        padding: 4px;
+        position: relative;
+        text-decoration: none;
+        width: 7em;
+        z-index: 2;
+      }
+
+      .bn39:hover {
+        color: #fff;
+      }
+
+      .bn39 .bn39span {
+        align-items: center;
+        background: #0e0e10;
+        border-radius: 6px;
+        display: flex;
+        justify-content: center;
+        height: 100%;
+        transition: background 0.5s ease;
+        width: 100%;
+      }
+
+      .bn39:hover .bn39span {
+        background: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Start Navbar -->
+    <nav
+      class="shadow-sm navbar navbar-expand-lg navbar-light justify-content-center"
+    >
+      <div class="container">
+        <a href="/">
+          <img src="" alt="Wara Wiri Travel" width="100" />
+        </a>
+        <a class="navbar-brand" href="#"> <h1>Tour & Travel Wara Wiri</h1></a>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+    <!-- Body -->
+    <section>
+      <div class="container">
+        <div class="row">
+          <div><h1 class="text-center">Judul</h1></div>
+        </div>
+
+        <div class="row">
+          <p>
+            ${body}
+          </p>
+          <div class="col mb-3">
+            <a class="bn39" href="${blogLink}"
+              ><span class="bn39span">For More Info</span></a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- end body -->
+
+    <!-- start footer -->
+    <div
+      class="shadow-sm container-fluid text-dark footer pt-5 mt-5 wow fadeIn"
+      data-wow-delay="0.1s"
+    >
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 col-md-6">
+            <h4 class="mb-4">PT Wara Wiri</h4>
+          </div>
+          <div class="col-lg-6 col-md-6 text-end">
+            <a href="http://localhost:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6">Unsubcribe</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end footer -->
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>`,
         };
       } else {
         mailOptions = {
@@ -312,7 +607,149 @@ app.post("/sendNewsletter", async (req, res) => {
           },
           to: recipient.email,
           subject: subject,
-          html: `<p>${body}</p><p style="margin-top: 16px;"><a href="http://localhost:2023/unsubscribe/${recipient.unsubscribeToken}">Unsubscribe dari newsletter</a></p>`,
+          html: `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="img/warawiri-logo.svg" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <title>News Letter</title>
+
+    <style>
+      .bn6 {
+        cursor: pointer;
+        outline: none;
+        border: none;
+        background-color: #f71707;
+        padding: 0.3em 1.2em;
+        border-radius: 30px;
+        font-size: 1.3rem;
+        font-weight: 550;
+        color: #ffffff;
+        background-size: 100% 100%;
+        box-shadow: 0 0 0 4px #e6564c inset;
+      }
+
+      .bn6:hover {
+        background-image: linear-gradient(
+          55deg,
+          transparent 10%,
+          #eb938d 10% 20%,
+          transparent 20% 30%,
+          #eb938d 30% 40%,
+          transparent 40% 50%,
+          #eb938d 50% 60%,
+          transparent 60% 70%,
+          #eb938d 70% 80%,
+          transparent 80% 90%,
+          #eb938d 90% 100%
+        );
+        animation: background 3s linear infinite;
+      }
+
+      .bn39 {
+        background-image: linear-gradient(135deg, #008aff, #86d472);
+        border-radius: 6px;
+        box-sizing: border-box;
+        color: #ffffff;
+        display: block;
+        height: 50px;
+        font-size: 1.4em;
+        font-weight: 600;
+        padding: 4px;
+        position: relative;
+        text-decoration: none;
+        width: 7em;
+        z-index: 2;
+      }
+
+      .bn39:hover {
+        color: #fff;
+      }
+
+      .bn39 .bn39span {
+        align-items: center;
+        background: #0e0e10;
+        border-radius: 6px;
+        display: flex;
+        justify-content: center;
+        height: 100%;
+        transition: background 0.5s ease;
+        width: 100%;
+      }
+
+      .bn39:hover .bn39span {
+        background: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Start Navbar -->
+    <nav
+      class="shadow-sm navbar navbar-expand-lg navbar-light justify-content-center"
+    >
+      <div class="container">
+        <a href="/">
+          <img src="" alt="Wara Wiri Travel" width="100" />
+        </a>
+        <a class="navbar-brand" href="#"> <h1>Tour & Travel Wara Wiri</h1></a>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+    <!-- Body -->
+    <section>
+      <div class="container">
+        <div class="row">
+          <div><h1 class="text-center">Judul</h1></div>
+        </div>
+
+        <div class="row">
+          <p>
+            ${body}
+          </p>
+          
+        </div>
+      </div>
+    </section>
+    <!-- end body -->
+
+    <!-- start footer -->
+    <div
+      class="shadow-sm container-fluid text-dark footer pt-5 mt-5 wow fadeIn"
+      data-wow-delay="0.1s"
+    >
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 col-md-6">
+            <h4 class="mb-4">PT Wara Wiri</h4>
+          </div>
+          <div class="col-lg-6 col-md-6 text-end">
+            <a href="http://localhost:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6">Unsubcribe</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end footer -->
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>`,
         };
       }
 
@@ -597,7 +1034,7 @@ app.post("/updateContact", requireAuth, async (req, res) => {
     });
 
     console.log("Contact updated successfully");
-    res.redirect("/info-kontak"); 
+    res.redirect("/info-kontak");
   } catch (error) {
     console.error("Error updating contact:", error);
     res.status(500).send("Error updating contact");
@@ -859,7 +1296,7 @@ app.get("/info-kontak", requireAuth, (req, res) => {
   db.collection("Contact")
     .get()
     .then((snapshot) => {
-      const kontak = snapshot.docs[0].data()
+      const kontak = snapshot.docs[0].data();
 
       res.render("admin/info-kontak", { kontak: kontak });
     })
