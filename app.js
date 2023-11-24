@@ -1,9 +1,14 @@
+require("dotenv").config();
 const express = require("express");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const admin = require("firebase-admin");
 const path = require("path");
 const multer = require("multer");
+const crypto = require("crypto");
+const md5 = require("md5");
+
+const nodemailer = require("nodemailer");
 
 const serviceAccount = require("./warawiriweb-alphetor-firebase-adminsdk-g58h2-354dad6595.json");
 
@@ -21,20 +26,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // create session middleware
 app.use(
   session({
-    secret: "not_yet_environmentized",
+    secret: "not_yet_environmentized", // move to .env
     resave: false,
     saveUninitialized: false,
   })
 );
-
-// temporary user for auth checking => PINDAHIN KE DATABASE NANTI
-const users = [
-  {
-    id: 1,
-    username: "admin",
-    password: "admin",
-  },
-];
 
 const requireAuth = (req, res, next) => {
   if (!req.session.user) {
@@ -45,6 +41,22 @@ const requireAuth = (req, res, next) => {
 
 const storageMulter = multer.memoryStorage();
 const upload = multer({ storage: storageMulter });
+
+// create reusable transporter using the default SMTP transport
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  port: 587,
+  secure: false, // true for 465, false for other ports
+  auth: {
+    user: "warawiribusiness@gmail.com", // move to .env
+    pass: "zyyd xjsw ipkd wlsz", // move to .env
+  },
+});
+
+function generateUniqueToken() {
+  return crypto.randomBytes(32).toString("hex");
+}
 
 app.set("view engine", "ejs");
 
@@ -60,7 +72,7 @@ app.get("/", (req, res) => {
         if (data.status === "on") {
           highlightBlogs.push({
             documentID: doc.id,
-          ...data,
+            ...data,
           });
         } else {
           blogs.push({
@@ -74,7 +86,7 @@ app.get("/", (req, res) => {
       if (x !== 0) {
         highlightBlogs.push(...blogs.slice(0, x));
         blogs.splice(0, x);
-      };
+      }
 
       res.render("home", { highlightBlogs: highlightBlogs });
     })
@@ -101,7 +113,7 @@ app.get("/blog", (req, res) => {
         });
       });
 
-      res.render("blog", { blogs: blogs });
+      res.render("blog", { blogs: blogs, subscribed: false });
     })
     .catch((error) => {
       res.send("Error: " + error);
@@ -134,11 +146,29 @@ app.get("/blog-detail-:title", (req, res) => {
 });
 
 app.get("/faq", (req, res) => {
-  res.render("faq");
+  db.collection("Contact")
+    .get()
+    .then((snapshot) => {
+      const kontak = snapshot.docs[0].data();
+
+      res.render("faq", { kontak: kontak });
+    })
+    .catch((error) => {
+      res.send("Error: " + error);
+    });
 });
 
 app.get("/contact", (req, res) => {
-  res.render("contact");
+  db.collection("Contact")
+    .get()
+    .then((snapshot) => {
+      const kontak = snapshot.docs[0].data();
+
+      res.render("contact", { kontak: kontak });
+    })
+    .catch((error) => {
+      res.send("Error: " + error);
+    });
 });
 
 app.get("/login", (req, res) => {
@@ -146,55 +176,616 @@ app.get("/login", (req, res) => {
 });
 
 app.get("/pricing", (req, res) => {
+  let kontak;
+  let pakets = [];
+
   db.collection("Paket")
     .orderBy("up_timestamp", "desc")
     .get()
     .then((snapshot) => {
-      const paket = [];
       snapshot.forEach((doc) => {
-        paket.push({
+        pakets.push({
           documentID: doc.id,
           ...doc.data(),
         });
       });
 
-      res.render("packet-pricing", { pakets: paket });
+      return db.collection("Contact").get();
+    })
+    .then((contactSnapshot) => {
+      kontak = contactSnapshot.docs[0].data();
+
+      res.render("packet-pricing", { pakets: pakets, kontak: kontak });
     })
     .catch((error) => {
       res.send("Error: " + error);
     });
 });
 
-app.get("/paket-detail-:nama", (req, res) => {
+app.get("/paket-detail-:nama", async (req, res) => {
   const nama = req.params.nama;
-  let paketData;
 
-  db.collection("Paket")
-    .get()
-    .then((snapshot) => {
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data.nama === nama) {
-          paketData = data;
-        }
-      });
+  try {
+    const paketQuery = await db
+      .collection("Paket")
+      .where("nama", "==", nama)
+      .get();
 
-      if (paketData) {
-        res.render("packet-pricing-details", { paket: paketData });
-      } else {
-        res.send("Item not found");
-      }
-    })
-    .catch((error) => {
-      res.send("Error: " + error);
+    if (paketQuery.empty) {
+      return res.send("Item not found");
+    }
+
+    const paketData = paketQuery.docs[0].data();
+
+    const contactQuery = await db.collection("Contact").get();
+    const kontak = contactQuery.docs[0].data();
+
+    res.render("packet-pricing-details", { paket: paketData, kontak: kontak });
+  } catch (error) {
+    res.send("Error: " + error);
+  }
+});
+
+app.post("/daftar", async (req, res) => {
+  try {
+    const email = req.body.email;
+
+    const emailsRef = db.collection("Emails");
+
+    const existingEmail = await emailsRef.where("email", "==", email).get();
+
+    if (!existingEmail.empty) {
+      return res.redirect("/blog");
+    }
+
+    const timestamp = admin.firestore.FieldValue.serverTimestamp();
+
+    const unsubscribeToken = generateUniqueToken();
+
+    await emailsRef.add({
+      email: email,
+      timestamp: timestamp,
+      unsubscribeToken: unsubscribeToken,
     });
+
+    db.collection("Blogs")
+      .orderBy("up_timestamp", "desc")
+      .get()
+      .then((snapshot) => {
+        const blogs = [];
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          blogs.push({
+            documentID: doc.id,
+            ...data,
+          });
+        });
+
+        res.render("blog", { blogs: blogs, subscribed: true });
+      })
+      .catch((error) => {
+        res.send("Error: " + error);
+      });
+  } catch (error) {
+    console.error("Error adding email:", error);
+    res.status(500).send("Error adding email");
+  }
+});
+
+app.post("/sendNewsletter", async (req, res) => {
+  try {
+    const subject = req.body.subject;
+    const body = req.body.body;
+    let linkType;
+    let link;
+
+    if (req.body.linkType !== null && req.body.link !== null) {
+      linkType = req.body.linkType;
+      link = req.body.link;
+    }
+
+    const emailsSnapshot = await db.collection("Emails").get();
+    const emails = [];
+
+    emailsSnapshot.forEach((doc) => {
+      const data = doc.data();
+      emails.push({
+        email: data.email,
+        unsubscribeToken: data.unsubscribeToken,
+      });
+    });
+
+    let mailOptions;
+
+    for (const recipient of emails) {
+      if (linkType === "paket") {
+        const paketLink = `http://localhost:2023/paket-detail-${encodeURIComponent(
+          link
+        )}`;
+        mailOptions = {
+          from: {
+            name: "Wara Wiri Tour",
+            address: "warawiribusiness@gmail.com", // move to .env
+          },
+          to: recipient.email,
+          subject: subject,
+          html: `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="img/warawiri-logo.svg" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <title>News Letter</title>
+
+    <style>
+      .bn6 {
+        cursor: pointer;
+        outline: none;
+        border: none;
+        background-color: #f71707;
+        padding: 0.3em 1.2em;
+        border-radius: 30px;
+        font-size: 1.3rem;
+        font-weight: 550;
+        color: #ffffff;
+        background-size: 100% 100%;
+        box-shadow: 0 0 0 4px #e6564c inset;
+      }
+
+      .bn6:hover {
+        background-image: linear-gradient(
+          55deg,
+          transparent 10%,
+          #eb938d 10% 20%,
+          transparent 20% 30%,
+          #eb938d 30% 40%,
+          transparent 40% 50%,
+          #eb938d 50% 60%,
+          transparent 60% 70%,
+          #eb938d 70% 80%,
+          transparent 80% 90%,
+          #eb938d 90% 100%
+        );
+        animation: background 3s linear infinite;
+      }
+
+      .bn39 {
+        background-image: linear-gradient(135deg, #008aff, #86d472);
+        border-radius: 6px;
+        box-sizing: border-box;
+        color: #ffffff;
+        display: block;
+        height: 50px;
+        font-size: 1.4em;
+        font-weight: 600;
+        padding: 4px;
+        position: relative;
+        text-decoration: none;
+        width: 7em;
+        z-index: 2;
+      }
+
+      .bn39:hover {
+        color: #fff;
+      }
+
+      .bn39 .bn39span {
+        align-items: center;
+        background: #0e0e10;
+        border-radius: 6px;
+        display: flex;
+        justify-content: center;
+        height: 100%;
+        transition: background 0.5s ease;
+        width: 100%;
+      }
+
+      .bn39:hover .bn39span {
+        background: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Start Navbar -->
+    <nav
+      class="shadow-sm navbar navbar-expand-lg navbar-light justify-content-center"
+    >
+      <div class="container">
+        <a href="/">
+          <img src="" alt="Wara Wiri Travel" width="100" />
+        </a>
+        <a class="navbar-brand" href="#"> <h1>Tour & Travel Wara Wiri</h1></a>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+    <!-- Body -->
+    <section>
+      <div class="container">
+        <div class="row">
+          <div><h1 class="text-center">Judul</h1></div>
+        </div>
+
+        <div class="row">
+          <p>
+            ${body}
+          </p>
+          <div class="col mb-3">
+            <a class="bn39" href="${paketLink}"
+              ><span class="bn39span">For More Info</span></a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- end body -->
+
+    <!-- start footer -->
+    <div
+      class="shadow-sm container-fluid text-dark footer pt-5 mt-5 wow fadeIn"
+      data-wow-delay="0.1s"
+    >
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 col-md-6">
+            <h4 class="mb-4">PT Wara Wiri</h4>
+          </div>
+          <div class="col-lg-6 col-md-6 text-end">
+            <a href="http://localhost:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6">Unsubcribe</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end footer -->
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>`,
+        };
+      } else if (linkType === "blog") {
+        const blogLink = `http://localhost:2023/blog-detail-${encodeURIComponent(
+          link
+        )}`;
+        mailOptions = {
+          from: {
+            name: "Wara Wiri Tour",
+            address: "warawiribusiness@gmail.com", // move to .env
+          },
+          to: recipient.email,
+          subject: subject,
+          html: `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="img/warawiri-logo.svg" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <title>News Letter</title>
+
+    <style>
+      .bn6 {
+        cursor: pointer;
+        outline: none;
+        border: none;
+        background-color: #f71707;
+        padding: 0.3em 1.2em;
+        border-radius: 30px;
+        font-size: 1.3rem;
+        font-weight: 550;
+        color: #ffffff;
+        background-size: 100% 100%;
+        box-shadow: 0 0 0 4px #e6564c inset;
+      }
+
+      .bn6:hover {
+        background-image: linear-gradient(
+          55deg,
+          transparent 10%,
+          #eb938d 10% 20%,
+          transparent 20% 30%,
+          #eb938d 30% 40%,
+          transparent 40% 50%,
+          #eb938d 50% 60%,
+          transparent 60% 70%,
+          #eb938d 70% 80%,
+          transparent 80% 90%,
+          #eb938d 90% 100%
+        );
+        animation: background 3s linear infinite;
+      }
+
+      .bn39 {
+        background-image: linear-gradient(135deg, #008aff, #86d472);
+        border-radius: 6px;
+        box-sizing: border-box;
+        color: #ffffff;
+        display: block;
+        height: 50px;
+        font-size: 1.4em;
+        font-weight: 600;
+        padding: 4px;
+        position: relative;
+        text-decoration: none;
+        width: 7em;
+        z-index: 2;
+      }
+
+      .bn39:hover {
+        color: #fff;
+      }
+
+      .bn39 .bn39span {
+        align-items: center;
+        background: #0e0e10;
+        border-radius: 6px;
+        display: flex;
+        justify-content: center;
+        height: 100%;
+        transition: background 0.5s ease;
+        width: 100%;
+      }
+
+      .bn39:hover .bn39span {
+        background: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Start Navbar -->
+    <nav
+      class="shadow-sm navbar navbar-expand-lg navbar-light justify-content-center"
+    >
+      <div class="container">
+        <a href="/">
+          <img src="" alt="Wara Wiri Travel" width="100" />
+        </a>
+        <a class="navbar-brand" href="#"> <h1>Tour & Travel Wara Wiri</h1></a>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+    <!-- Body -->
+    <section>
+      <div class="container">
+        <div class="row">
+          <div><h1 class="text-center">Judul</h1></div>
+        </div>
+
+        <div class="row">
+          <p>
+            ${body}
+          </p>
+          <div class="col mb-3">
+            <a class="bn39" href="${blogLink}"
+              ><span class="bn39span">For More Info</span></a
+            >
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- end body -->
+
+    <!-- start footer -->
+    <div
+      class="shadow-sm container-fluid text-dark footer pt-5 mt-5 wow fadeIn"
+      data-wow-delay="0.1s"
+    >
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 col-md-6">
+            <h4 class="mb-4">PT Wara Wiri</h4>
+          </div>
+          <div class="col-lg-6 col-md-6 text-end">
+            <a href="http://localhost:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6">Unsubcribe</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end footer -->
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>`,
+        };
+      } else {
+        mailOptions = {
+          from: {
+            name: "Wara Wiri Tour",
+            address: "warawiribusiness@gmail.com", // move to .env
+          },
+          to: recipient.email,
+          subject: subject,
+          html: `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="img/warawiri-logo.svg" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <title>News Letter</title>
+
+    <style>
+      .bn6 {
+        cursor: pointer;
+        outline: none;
+        border: none;
+        background-color: #f71707;
+        padding: 0.3em 1.2em;
+        border-radius: 30px;
+        font-size: 1.3rem;
+        font-weight: 550;
+        color: #ffffff;
+        background-size: 100% 100%;
+        box-shadow: 0 0 0 4px #e6564c inset;
+      }
+
+      .bn6:hover {
+        background-image: linear-gradient(
+          55deg,
+          transparent 10%,
+          #eb938d 10% 20%,
+          transparent 20% 30%,
+          #eb938d 30% 40%,
+          transparent 40% 50%,
+          #eb938d 50% 60%,
+          transparent 60% 70%,
+          #eb938d 70% 80%,
+          transparent 80% 90%,
+          #eb938d 90% 100%
+        );
+        animation: background 3s linear infinite;
+      }
+
+      .bn39 {
+        background-image: linear-gradient(135deg, #008aff, #86d472);
+        border-radius: 6px;
+        box-sizing: border-box;
+        color: #ffffff;
+        display: block;
+        height: 50px;
+        font-size: 1.4em;
+        font-weight: 600;
+        padding: 4px;
+        position: relative;
+        text-decoration: none;
+        width: 7em;
+        z-index: 2;
+      }
+
+      .bn39:hover {
+        color: #fff;
+      }
+
+      .bn39 .bn39span {
+        align-items: center;
+        background: #0e0e10;
+        border-radius: 6px;
+        display: flex;
+        justify-content: center;
+        height: 100%;
+        transition: background 0.5s ease;
+        width: 100%;
+      }
+
+      .bn39:hover .bn39span {
+        background: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Start Navbar -->
+    <nav
+      class="shadow-sm navbar navbar-expand-lg navbar-light justify-content-center"
+    >
+      <div class="container">
+        <a href="/">
+          <img src="" alt="Wara Wiri Travel" width="100" />
+        </a>
+        <a class="navbar-brand" href="#"> <h1>Tour & Travel Wara Wiri</h1></a>
+      </div>
+    </nav>
+    <!-- End Navbar -->
+    <!-- Body -->
+    <section>
+      <div class="container">
+        <div class="row">
+          <div><h1 class="text-center">Judul</h1></div>
+        </div>
+
+        <div class="row">
+          <p>
+            ${body}
+          </p>
+          
+        </div>
+      </div>
+    </section>
+    <!-- end body -->
+
+    <!-- start footer -->
+    <div
+      class="shadow-sm container-fluid text-dark footer pt-5 mt-5 wow fadeIn"
+      data-wow-delay="0.1s"
+    >
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-6 col-md-6">
+            <h4 class="mb-4">PT Wara Wiri</h4>
+          </div>
+          <div class="col-lg-6 col-md-6 text-end">
+            <a href="http://localhost:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6">Unsubcribe</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- end footer -->
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js"
+      integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>`,
+        };
+      }
+
+      await transporter.sendMail(mailOptions);
+    }
+
+    console.log("Email has been sent successfully");
+    res.redirect("/newsletter");
+  } catch (error) {
+    console.error("Error sending email:", error);
+    res.status(500).send("Error sending email");
+  }
 });
 
 app.post("/createpost", upload.single("gambar"), (req, res) => {
   const title = req.body.judul;
   const content = req.body.Berita;
   const imageBuffer = req.file.buffer;
-  const isHighlight = req.body.status === undefined ? 'off' : req.body.status;
+  const isHighlight = req.body.status === undefined ? "off" : req.body.status;
 
   const postRef = db.collection("Blogs").doc();
   const documentID = postRef.id;
@@ -310,7 +901,7 @@ app.post("/updatepost", upload.single("newImage"), async (req, res) => {
   const title = req.body.judul;
   const content = req.body.Berita;
   const documentID = req.body.ID;
-  const isHighlight = req.body.status === undefined ? 'off' : req.body.status;
+  const isHighlight = req.body.status === undefined ? "off" : req.body.status;
 
   try {
     if (req.body.newImage) {
@@ -447,6 +1038,26 @@ app.post("/updateItem", upload.array("gambar"), async (req, res) => {
   }
 });
 
+app.post("/updateContact", requireAuth, async (req, res) => {
+  try {
+    const newEmail = req.body.email;
+    const newNoTelp = req.body.noTelp;
+
+    const contactRef = db.collection("Contact").doc("TcFCStsO4m62PHisotDW");
+
+    await contactRef.update({
+      email: newEmail,
+      noTelp: newNoTelp,
+    });
+
+    console.log("Contact updated successfully");
+    res.redirect("/info-kontak");
+  } catch (error) {
+    console.error("Error updating contact:", error);
+    res.status(500).send("Error updating contact");
+  }
+});
+
 app.post("/deletepost/:documentID", async (req, res) => {
   try {
     const documentID = req.params.documentID;
@@ -491,6 +1102,48 @@ app.post("/deleteItem/:documentID", async (req, res) => {
   }
 });
 
+app.post("/deleteEmail/:documentID", async (req, res) => {
+  try {
+    const documentID = req.params.documentID;
+
+    const emailDoc = await db.collection("Emails").doc(documentID).get();
+    if (!emailDoc.exists) {
+      res.status(404).send("Email not found");
+      return;
+    }
+
+    await db.collection("Emails").doc(documentID).delete();
+
+    res.sendStatus(200);
+  } catch (error) {
+    console.error("Error unsubscribing email:", error);
+    res.status(500).send("Error unsubscribing email");
+  }
+});
+
+app.get("/unsubscribe/:token", async (req, res) => {
+  try {
+    const token = req.params.token;
+
+    const emailDoc = await db
+      .collection("Emails")
+      .where("unsubscribeToken", "==", token)
+      .get();
+
+    if (emailDoc.empty) {
+      res.status(404).send("Invalid unsubscribe token");
+      return;
+    }
+
+    await emailDoc.docs[0].ref.delete();
+
+    res.send("Unsubscribe successful");
+  } catch (error) {
+    console.error("Error processing unsubscribe request:", error);
+    res.status(500).send("Error processing unsubscribe request");
+  }
+});
+
 app.post("/updatestatus/:documentID", async (req, res) => {
   const documentID = req.params.documentID;
   const status = req.query.status;
@@ -499,9 +1152,9 @@ app.post("/updatestatus/:documentID", async (req, res) => {
   const postRef = db.collection("Blogs").doc(documentID);
 
   return postRef
-    .update({ 
+    .update({
       status: status,
-      up_timestamp: timestamp, 
+      up_timestamp: timestamp,
     })
     .then(async () => {
       const querySnapshot = await db
@@ -513,7 +1166,7 @@ app.post("/updatestatus/:documentID", async (req, res) => {
       if (querySnapshot.size > 3) {
         const oldestBlog = querySnapshot.docs[0];
         await oldestBlog.ref.update({ status: "off" });
-      } 
+      }
 
       res.sendStatus(200);
     })
@@ -523,14 +1176,28 @@ app.post("/updatestatus/:documentID", async (req, res) => {
     });
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
   const { username, password } = req.body;
 
-  const user = users.find((u) => u.username === username && u.password === password);
+  let user = [];
+  await db
+    .collection("User")
+    .get()
+    .then((snapshot) => {
+      snapshot.forEach((doc) => {
+        user.push({
+          ...doc.data(),
+        });
+      });
+    });
 
-  if (user) {
+  const activeUser = user.find(
+    (u) => u.username === username && u.password === md5(password)
+  );
+
+  if (activeUser) {
     // store user data in the session
-    req.session.user = user;
+    req.session.user = activeUser;
     res.redirect("/home");
   } else {
     res.redirect("/login");
@@ -563,7 +1230,7 @@ app.get("/home", requireAuth, (req, res) => {
         if (data.status === "on") {
           highlightBlogs.push({
             documentID: doc.id,
-          ...data,
+            ...data,
           });
         } else {
           blogs.push({
@@ -577,7 +1244,7 @@ app.get("/home", requireAuth, (req, res) => {
       if (x !== 0) {
         highlightBlogs.push(...blogs.slice(0, x));
         blogs.splice(0, x);
-      };
+      }
 
       res.render("admin/home", { highlightBlogs: highlightBlogs });
     })
@@ -643,15 +1310,58 @@ app.get("/edit-paket", requireAuth, (req, res) => {
 });
 
 app.get("/info-kontak", requireAuth, (req, res) => {
-  res.render("admin/info-kontak");
+  db.collection("Contact")
+    .get()
+    .then((snapshot) => {
+      const kontak = snapshot.docs[0].data();
+
+      res.render("admin/info-kontak", { kontak: kontak });
+    })
+    .catch((error) => {
+      res.send("Error: " + error);
+    });
 });
 
 app.get("/newsletter", requireAuth, (req, res) => {
-  res.render("admin/newsletter");
+  db.collection("Emails")
+    .get()
+    .then((snapshot) => {
+      const emails = [];
+      snapshot.forEach((doc) => {
+        emails.push({
+          documentID: doc.id,
+          ...doc.data(),
+        });
+      });
+
+      res.render("admin/newsletter", { emails: emails });
+    })
+    .catch((error) => {
+      res.send("Error: " + error);
+    });
 });
 
-app.get("/tambah-newsletter", requireAuth, (req, res) => {
-  res.render("admin/tambah-newsletter");
+app.get("/tambah-newsletter", requireAuth, async (req, res) => {
+  try {
+    const [blogsSnapshot, paketSnapshot] = await Promise.all([
+      db.collection("Blogs").get(),
+      db.collection("Paket").get(),
+    ]);
+
+    const blogs = blogsSnapshot.docs.map((doc) => ({
+      documentID: doc.id,
+      ...doc.data(),
+    }));
+
+    const paket = paketSnapshot.docs.map((doc) => ({
+      documentID: doc.id,
+      ...doc.data(),
+    }));
+
+    res.render("admin/tambah-newsletter", { blogs, paket });
+  } catch (error) {
+    res.status(500).send("Error: " + error);
+  }
 });
 
 app.listen(process.env.PORT || 2023, function () {

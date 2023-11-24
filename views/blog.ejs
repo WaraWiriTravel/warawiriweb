@@ -1,14 +1,28 @@
 <!-- Pemanggilan bagian header -->
 <%- include("partials/header") %>
 <!-- Pemanggilan bagian Navbar -->
-<%- include("partials/navbar") %> <%let highlightBlog = blogs[0]; %> <%let x = blogs.length; %><%let Blogs = blogs.splice(1, x); %>
+<%- include("partials/navbar") %> <%let highlightBlog = blogs[0]; %> <%let x =
+blogs.length; %><%let Blogs = blogs.splice(1, x); %> <% if (subscribed) { %>
+
+<section id="subscribed-notification">
+  <div class="alert alert-primary alert-dismissible fade show" role="alert">
+    <strong>Berhasil!</strong> Nantikan promo menarik mendatang di email anda.
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+  </div>
+</section>
+<% } %>
 
 <!-- Halaman Blog -->
 <section id="blog">
   <div class="container">
     <div class="row mb-3">
       <div class="col">
-        <h4 class="text-center">Apa yang baru dari Wara Wiri Tour ?</h4>
+        <h2 class="text-center">Apa yang baru dari Wara Wiri Tour ?</h2>
       </div>
     </div>
     <a
@@ -24,7 +38,7 @@
           />
         </div>
         <div class="col-md-8">
-          <h5><%= highlightBlog.title %></h5>
+          <h3><%= highlightBlog.title %></h3>
           <p><%= highlightBlog.content.substring(0, 100) %>...</p>
         </div>
       </div></a
@@ -43,7 +57,7 @@
   <div class="container">
     <div class="row mb-3 text-center">
       <div class="col">
-        <h4>Informasi Lainnya</h4>
+        <h2>Informasi Lainnya</h2>
       </div>
     </div>
     <div class="row justify-content-center">
@@ -89,7 +103,8 @@
               class="form-control border-0"
               placeholder="Your Email"
               style="height: 55px"
-              name="nama"
+              name="email"
+              id="email"
             />
           </div>
           <div class="col-12 col-sm-3">

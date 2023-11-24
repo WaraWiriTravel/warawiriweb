@@ -4,11 +4,11 @@
 <div class="container-fluid">
   <!-- Page Heading -->
   <div class="row mt-5">
-    <div class="col"><h1 class="mb-4 text-gray-800">Blog</h1></div>
+    <div class="col"><h3 class="mb-4 text-gray-800">Blog</h3></div>
     <div class="col">
-      <h1 class="mb-4 text-gray-800">
+      <h3 class="mb-4 text-gray-800">
         Edit Berita <button class="rounded-circle"><i class="fa-solid fa-plus"></i></button>
-      </h1>
+      </h3>
     </div>
   </div>
   <!-- Form -->
@@ -18,29 +18,29 @@
         <!--  ID  -->
         <div class="form-group">
           <label for="ID">Blog#ID</label>
-          <input type="text" class="form-control" id="ID" name="ID" required value="<%= query.documentID %>" readonly/>
+          <input type="text" class="form-control" id="ID" name="ID" required value="<%= query.documentID %>" readonly />
         </div>
         <!--  Berita  -->
         <div class="form-group">
           <label for="Judul">Judul</label>
-          <input type="text" placeholder="Judul Berita" class="form-control" id="judul" name="judul" required value="<%= query.title %>"/>
+          <input type="text" placeholder="Judul Berita" class="form-control" id="judul" name="judul" required value="<%= query.title %>" />
         </div>
         <!-- Gambar -->
-        <div class="form-group" id="currentImageGroup" style="display: block;">
-          <label for="image" style="display: inline-block;">Current Image:</label>
-          <button type="button" id="changeImageButton" onclick="toggleImageInput()" style="display: inline-block;">Change Image</button>
-          <img src="<%= query.imageUrl %>" alt="Current Image" id="currentImage" class="img-fluid rounded-4 mx-auto d-block pt-3">
+        <div class="form-group" id="currentImageGroup" style="display: block">
+          <label for="image" style="display: inline-block">Current Image:</label>
+          <button type="button" id="changeImageButton" onclick="toggleImageInput()" style="display: inline-block">Change Image</button>
+          <img src="<%= query.imageUrl %>" alt="Current Image" id="currentImage" class="img-fluid rounded-4 mx-auto d-block pt-3" />
         </div>
-        <div class="form-group" id="newImageGroup" style="display: none;">
+        <div class="form-group" id="newImageGroup" style="display: none">
           <label for="newImage">New Image:</label>
-          <input type="file" name="newImage" id="newImage" accept="image/jpeg, image/jpg, image/png">
+          <input type="file" name="newImage" id="newImage" accept="image/jpeg, image/jpg, image/png" />
           <button type="button" id="cancelButton" onclick="toggleImageInput()">Cancel</button>
         </div>
         <!-- Berita -->
         <div class="form-group">
           <label for="Berita">Berita</label>
           <textarea class="form-control" id="Berita" name="Berita" required><%= query.content %></textarea>
-        </div>      
+        </div>
         <!-- Berita -->
         <div class="form-group"><input type="checkbox" name="status" id="status" <% if (query.status === "on") { %>checked<% } %> /> Jadikan Highlight</div>
 
@@ -56,7 +56,7 @@
   function toggleImageInput() {
     const currentImageGroup = document.getElementById("currentImageGroup");
     const newImageGroup = document.getElementById("newImageGroup");
-  
+
     if (currentImageGroup.style.display === "block") {
       currentImageGroup.style.display = "none";
       newImageGroup.style.display = "block";

@@ -4,22 +4,27 @@
 <div class="container-fluid">
   <!-- Page Heading -->
   <div class="row mt-5">
-    <div class="col"><h1 class="text-center">Contact</h1></div>
+    <div class="col"><h3 class="text-center">Contact</h3></div>
   </div>
   <!-- Divider -->
   <hr class="sidebar-divider my-2 mt-2" />
   <!-- Form -->
   <div class="row justify-content-center p-5">
     <div class="col-lg-8">
-      <form method="POST" action="#" enctype="multipart/form-data">
+      <form method="POST" action="/updateContact">
         <!--  Berita  -->
         <div class="form-group">
-          <input type="email" placeholder="Email" class="form-control" id="email" name="email" required />
+          <input type="email" placeholder="Email" class="form-control" id="email" name="email" value="<%= kontak.email %>" required />
         </div>
         <!--  No Wa  -->
         <div class="form-group">
-          <input type="text" placeholder="Nomor Whatsapp" class="form-control" id="nowa" name="nowa" required />
-        </div>
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">+62</span>
+            </div>
+            <input type="text" placeholder="Nomor WhatsApp" class="form-control" id="noTelp" name="noTelp" value="<%= kontak.noTelp %>" required />
+          </div>
+        </div>                
         <!-- Submit Button -->
         <button type="submit" class="btn btn-primary">Simpan <i class="fa-regular fa-floppy-disk"></i></button>
       </form>

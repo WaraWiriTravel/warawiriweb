@@ -27,6 +27,11 @@ h5 {
   font-weight: 400; /* Regular */
 }
 
+pre {
+  font-family: "Roboto", sans-serif;
+  white-space: pre-wrap;
+}
+
 #subheading1 {
   font-family: "Roboto", sans-serif;
   font-size: 28px;
@@ -92,10 +97,17 @@ section {
   object-fit: cover;
 }
 
+.carousel-inner img {
+  width: 100%;
+  aspect-ratio: 3/2;
+  object-fit: cover;
+}
+
 .slider {
   margin-bottom: 30px;
   position: relative;
 }
+
 .slider .owl-item.active.center .slider-card {
   transform: scale(1.15);
   opacity: 1;
@@ -180,13 +192,7 @@ section {
 }
 
 .bn632-hover.bn26 {
-  background-image: linear-gradient(
-    to right,
-    #25aae1,
-    #4481eb,
-    #04befe,
-    #3f86ed
-  );
+  background-image: linear-gradient(to right, #25aae1, #4481eb, #04befe, #3f86ed);
   box-shadow: 0 4px 15px 0 rgba(165, 192, 233, 0.75);
 }
 
