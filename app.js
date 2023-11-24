@@ -113,7 +113,7 @@ app.get("/blog", (req, res) => {
         });
       });
 
-      res.render("blog", { blogs: blogs });
+      res.render("blog", { blogs: blogs, subscribed: false });
     })
     .catch((error) => {
       res.send("Error: " + error);
@@ -248,7 +248,24 @@ app.post("/daftar", async (req, res) => {
       unsubscribeToken: unsubscribeToken,
     });
 
-    res.redirect("/blog");
+    db.collection("Blogs")
+      .orderBy("up_timestamp", "desc")
+      .get()
+      .then((snapshot) => {
+        const blogs = [];
+        snapshot.forEach((doc) => {
+          const data = doc.data();
+          blogs.push({
+            documentID: doc.id,
+            ...data,
+          });
+        });
+
+        res.render("blog", { blogs: blogs, subscribed: true });
+      })
+      .catch((error) => {
+        res.send("Error: " + error);
+      });
   } catch (error) {
     console.error("Error adding email:", error);
     res.status(500).send("Error adding email");
