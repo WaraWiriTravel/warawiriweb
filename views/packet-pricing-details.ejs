@@ -25,22 +25,38 @@
       <h2><%= paket.nama %></h2>
     </div>
   </div>
-  <div id="carouselExample" class="carousel slide">
-    <div class="carousel-inner">
-      <% paket.gambar.forEach((gambar, index) => { %>
-      <div class="carousel-item<%= index === 0 ? ' active' : '' %>">
-        <img src="<%= gambar %>" class="d-block w-100" alt="..." />
+  <div class="carousel-container">
+    <div id="carouselExample" class="carousel slide">
+      <div class="carousel-inner">
+        <% paket.gambar.forEach((gambar, index) => { %>
+        <div class="carousel-item<%= index === 0 ? ' active' : '' %>">
+          <img
+            src="<%= gambar %>"
+            class="d-block w-100 img-carousel-price"
+            alt="..."
+          />
+        </div>
+        <% }); %>
       </div>
-      <% }); %>
+      <button
+        class="carousel-control-prev"
+        type="button"
+        data-bs-target="#carouselExample"
+        data-bs-slide="prev"
+      >
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="visually-hidden">Previous</span>
+      </button>
+      <button
+        class="carousel-control-next"
+        type="button"
+        data-bs-target="#carouselExample"
+        data-bs-slide="next"
+      >
+        <span class="carousel-control-next-icon" ariahidden="true"></span>
+        <span class="visually-hidden">Next</span>
+      </button>
     </div>
-    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-      <span class="visually-hidden">Previous</span>
-    </button>
-    <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-      <span class="carousel-control-next-icon" ariahidden="true"></span>
-      <span class="visually-hidden">Next</span>
-    </button>
   </div>
 
   <div class="mt-3 mb-5">
@@ -50,7 +66,11 @@
   </div>
 
   <div class="text-center mb-5">
-    <a href="https://wa.me/62<%= kontak.noTelp %>?text=Halo,%20saya%20tertarik%20untuk%20mengetahui%20lebih%20lanjut%20tentang%20paket%20<%= encodeURIComponent(paket.nama) %>" class="bn15">Pesan Sekarang!</a>
+    <a
+      href="https://wa.me/62<%= kontak.noTelp %>?text=Halo,%20saya%20tertarik%20untuk%20mengetahui%20lebih%20lanjut%20tentang%20paket%20<%= encodeURIComponent(paket.nama) %>"
+      class="bn15"
+      >Pesan Sekarang!</a
+    >
   </div>
 </div>
 <!-- Pemanggilan bagian footer -->

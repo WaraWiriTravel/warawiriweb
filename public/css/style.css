@@ -112,8 +112,16 @@ section {
   transform: scale(1.15);
   opacity: 1;
   background: #ff9966; /* fallback for old browsers */
-  background: -webkit-linear-gradient(to bottom, #ff5e62, #ff9966); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(to bottom, #ff5e62, #ff9966); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  background: -webkit-linear-gradient(
+    to bottom,
+    #ff5e62,
+    #ff9966
+  ); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(
+    to bottom,
+    #ff5e62,
+    #ff9966
+  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   color: #0f0f0f;
 }
 .slider-card {
@@ -192,7 +200,13 @@ section {
 }
 
 .bn632-hover.bn26 {
-  background-image: linear-gradient(to right, #25aae1, #4481eb, #04befe, #3f86ed);
+  background-image: linear-gradient(
+    to right,
+    #25aae1,
+    #4481eb,
+    #04befe,
+    #3f86ed
+  );
   box-shadow: 0 4px 15px 0 rgba(165, 192, 233, 0.75);
 }
 
@@ -216,4 +230,17 @@ section {
 
 .whiteshade {
   background: rgba(255, 255, 255, 0.3);
+}
+
+.img-blog-details,
+.img-blog-highlight {
+  max-height: 40vh;
+  min-height: 30vh;
+  aspect-ratio: 3/2;
+  object-fit: cover;
+}
+
+.img-carousel-price {
+  min-height: 30vh;
+  max-height: 60vh;
 }
