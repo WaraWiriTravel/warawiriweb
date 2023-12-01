@@ -819,7 +819,18 @@ app.post("/createpost", upload.single("gambar"), (req, res) => {
             cr_timestamp: timestamp,
             up_timestamp: timestamp,
           })
-          .then(() => {
+          .then(async () => {
+            const querySnapshot = await db
+              .collection("Blogs")
+              .where("status", "==", "on")
+              .orderBy("up_timestamp", "asc")
+              .get();
+
+            if (querySnapshot.size > 3) {
+              const oldestBlog = querySnapshot.docs[0];
+              await oldestBlog.ref.update({ status: "off" });
+            }
+            
             res.redirect("/blog-admin");
           })
           .catch((error) => {
@@ -952,6 +963,17 @@ app.post("/updatepost", upload.single("newImage"), async (req, res) => {
 
     await postRef.set(updateData, { merge: true });
 
+    const querySnapshot = await db
+      .collection("Blogs")
+      .where("status", "==", "on")
+      .orderBy("up_timestamp", "asc")
+      .get();
+
+    if (querySnapshot.size > 3) {
+      const oldestBlog = querySnapshot.docs[0];
+      await oldestBlog.ref.update({ status: "off" });
+    }
+
     console.log("Post updated successfully");
     res.redirect("/blog-admin");
   } catch (error) {
@@ -1051,7 +1073,7 @@ app.post("/updateContact", requireAuth, async (req, res) => {
     });
 
     console.log("Contact updated successfully");
-    res.redirect("/info-kontak");
+    res.redirect("/info-kontak"); 
   } catch (error) {
     console.error("Error updating contact:", error);
     res.status(500).send("Error updating contact");
@@ -1241,7 +1263,7 @@ app.get("/home", requireAuth, (req, res) => {
       });
 
       const x = 3 - highlightBlogs.length;
-      if (x !== 0) {
+      if (x >  0) {
         highlightBlogs.push(...blogs.slice(0, x));
         blogs.splice(0, x);
       }
@@ -1313,7 +1335,7 @@ app.get("/info-kontak", requireAuth, (req, res) => {
   db.collection("Contact")
     .get()
     .then((snapshot) => {
-      const kontak = snapshot.docs[0].data();
+      const kontak = snapshot.docs[0].data()
 
       res.render("admin/info-kontak", { kontak: kontak });
     })
