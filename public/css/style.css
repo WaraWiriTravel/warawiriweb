@@ -240,6 +240,11 @@ section {
   object-fit: cover;
 }
 
+.img-home-highlight {
+  aspect-ratio: 1/1;
+  object-fit: cover;
+}
+
 .img-carousel-price {
   min-height: 30vh;
   max-height: 60vh;

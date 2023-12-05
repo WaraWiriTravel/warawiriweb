@@ -11,7 +11,9 @@
         <h2>Lebih Baik Sekali Melihat Dari Pada Seribu Kali Mendengar</h2>
       </div>
       <div class="col-md-4">
-        <a href="/pricing"><button class="bn632-hover bn26">Jelajahi Lagi</button></a>
+        <a href="/pricing"
+          ><button class="bn632-hover bn26">Jelajahi Lagi</button></a
+        >
       </div>
     </div>
 
@@ -20,9 +22,11 @@
         <% highlightBlogs.forEach(blog => { %>
         <div class="slider-card">
           <div class="d-flex justify-content-center align-items-center mb-4">
-            <img src="<%= blog.imageUrl %>" alt="" />
+            <img src="<%= blog.imageUrl %>" alt="" class="img-home-highlight" />
           </div>
-          <div class="position-absolute bottom-0 start-0 text-center w-100 whiteshade">
+          <div
+            class="position-absolute bottom-0 start-0 text-center w-100 whiteshade"
+          >
             <h5><b><%= blog.title.substring(0,30) %>...</b></h5>
             <p><%= blog.content.substring(0, 50) %>...</p>
           </div>

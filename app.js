@@ -299,7 +299,7 @@ app.post("/sendNewsletter", async (req, res) => {
 
     for (const recipient of emails) {
       if (linkType === "paket") {
-        const paketLink = `http://localhost:2023/paket-detail-${encodeURIComponent(
+        const paketLink = `http://103.13.206.43:2023/paket-detail-${encodeURIComponent(
           link
         )}`;
         mailOptions = {
@@ -399,7 +399,7 @@ app.post("/sendNewsletter", async (req, res) => {
     >
       <div class="container">
         <a href="/">
-          <img src="" alt="Wara Wiri Travel" width="100" />
+          <img src="https://i.ibb.co/xf06hKp/sketch-transparent.png" alt="Wara Wiri Travel" width="100" />
         </a>
         <a class="navbar-brand" href="#"> <h1>Tour & Travel Wara Wiri</h1></a>
       </div>
@@ -437,7 +437,7 @@ app.post("/sendNewsletter", async (req, res) => {
             <h4 class="mb-4">PT Wara Wiri</h4>
           </div>
           <div class="col-lg-6 col-md-6 text-end">
-            <a href="http://localhost:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6">Unsubcribe</a>
+            <a href="http://103.13.206.43:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6">Unsubcribe</a>
           </div>
         </div>
       </div>
@@ -458,7 +458,7 @@ app.post("/sendNewsletter", async (req, res) => {
 </html>`,
         };
       } else if (linkType === "blog") {
-        const blogLink = `http://localhost:2023/blog-detail-${encodeURIComponent(
+        const blogLink = `http://103.13.206.43:2023/blog-detail-${encodeURIComponent(
           link
         )}`;
         mailOptions = {
@@ -558,7 +558,7 @@ app.post("/sendNewsletter", async (req, res) => {
     >
       <div class="container">
         <a href="/">
-          <img src="" alt="Wara Wiri Travel" width="100" />
+          <img src="https://i.ibb.co/xf06hKp/sketch-transparent.png" alt="Wara Wiri Travel" width="100" />
         </a>
         <a class="navbar-brand" href="#"> <h1>Tour & Travel Wara Wiri</h1></a>
       </div>
@@ -596,7 +596,7 @@ app.post("/sendNewsletter", async (req, res) => {
             <h4 class="mb-4">PT Wara Wiri</h4>
           </div>
           <div class="col-lg-6 col-md-6 text-end">
-            <a href="http://localhost:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6">Unsubcribe</a>
+            <a href="http://103.13.206.43:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6">Unsubcribe</a>
           </div>
         </div>
       </div>
@@ -714,7 +714,7 @@ app.post("/sendNewsletter", async (req, res) => {
     >
       <div class="container">
         <a href="/">
-          <img src="" alt="Wara Wiri Travel" width="100" />
+          <img src="https://i.ibb.co/xf06hKp/sketch-transparent.png" alt="Wara Wiri Travel" width="100" />
         </a>
         <a class="navbar-brand" href="#"> <h1>Tour & Travel Wara Wiri</h1></a>
       </div>
@@ -748,7 +748,7 @@ app.post("/sendNewsletter", async (req, res) => {
             <h4 class="mb-4">PT Wara Wiri</h4>
           </div>
           <div class="col-lg-6 col-md-6 text-end">
-            <a href="http://localhost:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6">Unsubcribe</a>
+            <a href="http://103.13.206.43:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6">Unsubcribe</a>
           </div>
         </div>
       </div>
@@ -830,7 +830,7 @@ app.post("/createpost", upload.single("gambar"), (req, res) => {
               const oldestBlog = querySnapshot.docs[0];
               await oldestBlog.ref.update({ status: "off" });
             }
-            
+
             res.redirect("/blog-admin");
           })
           .catch((error) => {
@@ -1073,7 +1073,7 @@ app.post("/updateContact", requireAuth, async (req, res) => {
     });
 
     console.log("Contact updated successfully");
-    res.redirect("/info-kontak"); 
+    res.redirect("/info-kontak");
   } catch (error) {
     console.error("Error updating contact:", error);
     res.status(500).send("Error updating contact");
@@ -1263,7 +1263,7 @@ app.get("/home", requireAuth, (req, res) => {
       });
 
       const x = 3 - highlightBlogs.length;
-      if (x >  0) {
+      if (x > 0) {
         highlightBlogs.push(...blogs.slice(0, x));
         blogs.splice(0, x);
       }
@@ -1335,7 +1335,7 @@ app.get("/info-kontak", requireAuth, (req, res) => {
   db.collection("Contact")
     .get()
     .then((snapshot) => {
-      const kontak = snapshot.docs[0].data()
+      const kontak = snapshot.docs[0].data();
 
       res.render("admin/info-kontak", { kontak: kontak });
     })
