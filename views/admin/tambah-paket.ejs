@@ -14,22 +14,63 @@
         <form method="POST" action="/createItem" enctype="multipart/form-data">
           <div class="row g-3 mb-3">
             <div class="col-12 col-sm-6 mb-4">
-              <input required type="text" class="form-control border-2" placeholder="Nama Paket" style="height: 55px" name="nama" id="nama" />
+              <input
+                required
+                type="text"
+                class="form-control border-2"
+                placeholder="Nama Paket"
+                style="height: 55px"
+                name="nama"
+                id="nama"
+              />
             </div>
             <div class="col-12 col-sm-6">
-              <input required type="text" class="form-control border-2" placeholder="Harga Terendah" style="height: 55px" name="minHarga" id="minHarga" />
+              <input
+                required
+                type="text"
+                class="form-control border-2"
+                placeholder="Keterangan Paket 1"
+                style="height: 55px"
+                name="minHarga"
+                id="minHarga"
+              />
             </div>
             <div class="col-12 col-sm-6">
-              <input required type="file" class="form-control border-2" style="height: 55px" name="gambar" id="gambar" multiple />
+              <input
+                required
+                type="file"
+                class="form-control border-2"
+                style="height: 55px"
+                name="gambar"
+                id="gambar"
+                multiple
+              />
             </div>
             <div class="col-12 col-sm-6 mb-4">
-              <input required type="text" class="form-control border-2" placeholder="Harga Tertinggi" style="height: 55px" name="maxHarga" id="maxHarga" />
+              <input
+                required
+                type="text"
+                class="form-control border-2"
+                placeholder="Keterangan Paket 2"
+                style="height: 55px"
+                name="maxHarga"
+                id="maxHarga"
+              />
             </div>
-            <div class="col-12 col-sm-6 mb-4">
-              <textarea class="form-control" id="desc" name="desc" placeholder="Penjelasan Paket" required></textarea>
+            <div class="col-12 col-sm-12 mb-4">
+              <textarea
+                class="form-control"
+                id="desc"
+                name="desc"
+                placeholder="Penjelasan Paket"
+                required
+                rows="15"
+              ></textarea>
             </div>
             <div class="col-12">
-              <button class="btn btn-primary w-50 py-3" type="submit">Add</button>
+              <button class="btn btn-primary w-50 py-3" type="submit">
+                Add
+              </button>
             </div>
           </div>
         </form>

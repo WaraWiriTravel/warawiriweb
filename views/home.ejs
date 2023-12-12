@@ -21,15 +21,24 @@
       <div class="owl-carousel">
         <% highlightBlogs.forEach(blog => { %>
         <div class="slider-card">
-          <div class="d-flex justify-content-center align-items-center mb-4">
-            <img src="<%= blog.imageUrl %>" alt="" class="img-home-highlight" />
-          </div>
-          <div
-            class="position-absolute bottom-0 start-0 text-center w-100 whiteshade"
+          <a
+            href="/blog-detail-<%= blog.title %>"
+            class="text-reset text-decoration-none"
           >
-            <h5><b><%= blog.title.substring(0,30) %>...</b></h5>
-            <p><%= blog.content.substring(0, 50) %>...</p>
-          </div>
+            <div class="d-flex justify-content-center align-items-center mb-4">
+              <img
+                src="<%= blog.imageUrl %>"
+                alt=""
+                class="img-home-highlight"
+              />
+            </div>
+            <div
+              class="position-absolute bottom-0 start-0 text-center w-100 whiteshade"
+            >
+              <h5><b><%= blog.title.substring(0,30) %>...</b></h5>
+              <p><%= blog.content.substring(0, 50) %>...</p>
+            </div>
+          </a>
         </div>
         <% }); %>
       </div>

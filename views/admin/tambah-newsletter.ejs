@@ -14,25 +14,52 @@
         <form method="POST" action="/sendNewsletter">
           <div class="row g-3 mb-3">
             <div class="col-lg-12 col-sm-6 mb-4">
-              <input required type="text" class="form-control border-2" placeholder="Subject" style="height: 55px" name="subject" id="subject" />
+              <input
+                required
+                type="text"
+                class="form-control border-2"
+                placeholder="Subject"
+                style="height: 55px"
+                name="subject"
+                id="subject"
+              />
             </div>
             <div class="col-12 col-sm-6 mb-4">
-              <select class="form-control border-2" aria-label="Default select example" id="linkType" name="linkType">
+              <select
+                class="form-control border-2"
+                aria-label="Default select example"
+                id="linkType"
+                name="linkType"
+              >
                 <option selected disabled>Cantumkan link</option>
                 <option value="paket">Paket</option>
                 <option value="blog">Blog</option>
               </select>
             </div>
             <div class="col-12 col-sm-6">
-              <select class="form-control border-2" aria-label="Default select example" id="link" name="link">
+              <select
+                class="form-control border-2"
+                aria-label="Default select example"
+                id="link"
+                name="link"
+              >
                 <option selected disabled>Pilih link</option>
               </select>
             </div>
             <div class="col-lg-12 col-sm-6 mb-4">
-              <textarea class="form-control" id="id" name="body" placeholder="Body" required></textarea>
+              <textarea
+                class="form-control"
+                id="id"
+                name="body"
+                placeholder="Body"
+                required
+                rows="15"
+              ></textarea>
             </div>
             <div class="col-12">
-              <button class="btn btn-primary w-50 py-3" type="submit">Send</button>
+              <button class="btn btn-primary w-50 py-3" type="submit">
+                Send
+              </button>
             </div>
           </div>
         </form>

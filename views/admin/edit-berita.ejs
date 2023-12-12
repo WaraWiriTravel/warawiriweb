@@ -7,7 +7,8 @@
     <div class="col"><h3 class="mb-4 text-gray-800">Blog</h3></div>
     <div class="col">
       <h3 class="mb-4 text-gray-800">
-        Edit Berita <button class="rounded-circle"><i class="fa-solid fa-plus"></i></button>
+        Edit Berita
+        <button class="rounded-circle"><i class="fa-solid fa-plus"></i></button>
       </h3>
     </div>
   </div>
@@ -17,36 +18,88 @@
       <form method="POST" action="/updatepost" enctype="multipart/form-data">
         <!--  ID  -->
         <div class="form-group">
-          <label for="ID">Blog#ID</label>
-          <input type="text" class="form-control" id="ID" name="ID" required value="<%= query.documentID %>" readonly />
+          <!-- <label for="ID">Blog#ID</label> -->
+          <input
+            type="text"
+            class="form-control"
+            id="ID"
+            name="ID"
+            required
+            value="<%= query.documentID %>"
+            readonly
+            hidden
+          />
         </div>
         <!--  Berita  -->
         <div class="form-group">
           <label for="Judul">Judul</label>
-          <input type="text" placeholder="Judul Berita" class="form-control" id="judul" name="judul" required value="<%= query.title %>" />
+          <input
+            type="text"
+            placeholder="Judul Berita"
+            class="form-control"
+            id="judul"
+            name="judul"
+            required
+            value="<%= query.title %>"
+          />
         </div>
         <!-- Gambar -->
         <div class="form-group" id="currentImageGroup" style="display: block">
-          <label for="image" style="display: inline-block">Current Image:</label>
-          <button type="button" id="changeImageButton" onclick="toggleImageInput()" style="display: inline-block">Change Image</button>
-          <img src="<%= query.imageUrl %>" alt="Current Image" id="currentImage" class="img-fluid rounded-4 mx-auto d-block pt-3" />
+          <label for="image" style="display: inline-block"
+            >Current Image:</label
+          >
+          <button
+            type="button"
+            id="changeImageButton"
+            onclick="toggleImageInput()"
+            style="display: inline-block"
+          >
+            Change Image
+          </button>
+          <img
+            src="<%= query.imageUrl %>"
+            alt="Current Image"
+            id="currentImage"
+            style="max-width: 30vw; max-height: 30vh"
+            class="img-fluid rounded-4 mx-auto d-block pt-3 img-thumbnail"
+          />
         </div>
         <div class="form-group" id="newImageGroup" style="display: none">
           <label for="newImage">New Image:</label>
-          <input type="file" name="newImage" id="newImage" accept="image/jpeg, image/jpg, image/png" />
-          <button type="button" id="cancelButton" onclick="toggleImageInput()">Cancel</button>
+          <input
+            type="file"
+            name="newImage"
+            id="newImage"
+            accept="image/jpeg, image/jpg, image/png"
+          />
+          <button type="button" id="cancelButton" onclick="toggleImageInput()">
+            Cancel
+          </button>
         </div>
         <!-- Berita -->
         <div class="form-group">
           <label for="Berita">Berita</label>
-          <textarea class="form-control" id="Berita" name="Berita" required><%= query.content %></textarea>
+          <textarea
+            class="form-control"
+            id="Berita"
+            name="Berita"
+            required
+            rows="15"
+          >
+<%= query.content %></textarea
+          >
         </div>
         <!-- Berita -->
-        <div class="form-group"><input type="checkbox" name="status" id="status" <% if (query.status === "on") { %>checked<% } %> /> Jadikan Highlight</div>
+        <div class="form-group">
+          <input type="checkbox" name="status" id="status" <% if (query.status
+          === "on") { %>checked<% } %> /> Jadikan Highlight
+        </div>
 
         <!-- Submit Button -->
 
-        <button type="submit" class="btn btn-primary">Simpan <i class="fa-regular fa-floppy-disk"></i></button>
+        <button type="submit" class="btn btn-primary">
+          Simpan <i class="fa-regular fa-floppy-disk"></i>
+        </button>
       </form>
     </div>
   </div>

@@ -255,3 +255,8 @@ section {
   object-fit: cover;
   border-radius: 10px;
 }
+
+.img-thumbnail {
+  max-width: 20vw;
+  max-height: 20vh;
+}
