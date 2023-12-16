@@ -172,7 +172,11 @@ app.get("/contact", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  res.render("login");
+  if (req.session.user) {
+    return res.redirect("/home");
+  } else {
+    res.render("login");
+  }
 });
 
 app.get("/pricing", (req, res) => {
