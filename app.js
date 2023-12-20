@@ -431,7 +431,7 @@ app.post("/sendNewsletter", async (req, res) => {
           </pre>
           <div class="col mb-3">
             <a class="bn39" href="${paketLink} style="color: white;"
-              ><span class="bn39span">For More Info</span></a
+              ><span class="bn39span" style="color: white;">For More Info</span></a
             >
           </div>
         </div>
@@ -599,7 +599,7 @@ app.post("/sendNewsletter", async (req, res) => {
           </pre>
           <div class="col mb-3">
             <a class="bn39" href="${blogLink} style="color: white;"
-              ><span class="bn39span">For More Info</span></a
+              ><span class="bn39span" style="color: white;">For More Info</span></a
             >
           </div>
         </div>
