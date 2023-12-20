@@ -411,7 +411,7 @@ app.post("/sendNewsletter", async (req, res) => {
       class="shadow-sm navbar navbar-expand-lg navbar-light justify-content-center"
     >
       <div class="container">
-        <a href="http://103.13.206.43:2023/">
+        <a href="http://103.13.206.43:2023/" style="text-align: center;">
           <img src="https://i.ibb.co/xf06hKp/sketch-transparent.png" alt="Wara Wiri Travel" style="text-align: center;" width="100" />
         </a>
         <a class="navbar-brand" href="#"> <h1 style="color: black; text-align: center;">Tour & Travel Wara Wiri</h1></a>
@@ -430,7 +430,7 @@ app.post("/sendNewsletter", async (req, res) => {
             ${body}
           </pre>
           <div class="col mb-3">
-            <a class="bn39" href="${paketLink} style="color: white;"
+            <a class="bn39" href="${paketLink} style="color: white; text-align: center;"
               ><span class="bn39span" style="color: white; text-align: center;">For More Info</span></a
             >
           </div>
@@ -579,7 +579,7 @@ app.post("/sendNewsletter", async (req, res) => {
       class="shadow-sm navbar navbar-expand-lg navbar-light justify-content-center"
     >
       <div class="container">
-        <a href="http://103.13.206.43:2023/">
+        <a href="http://103.13.206.43:2023/" style="text-align: center;">
           <img src="https://i.ibb.co/xf06hKp/sketch-transparent.png" alt="Wara Wiri Travel" style="text-align: center;" width="100" />
         </a>
         <a class="navbar-brand" href="#"> <h1 style="color: black; text-align: center;">Tour & Travel Wara Wiri</h1></a>
@@ -598,7 +598,7 @@ app.post("/sendNewsletter", async (req, res) => {
             ${body}
           </pre>
           <div class="col mb-3">
-            <a class="bn39" href="${blogLink} style="color: white;"
+            <a class="bn39" href="${blogLink} style="color: white; text-align: center;"
               ><span class="bn39span" style="color: white; text-align: center;">For More Info</span></a
             >
           </div>
@@ -744,7 +744,7 @@ app.post("/sendNewsletter", async (req, res) => {
       class="shadow-sm navbar navbar-expand-lg navbar-light justify-content-center"
     >
       <div class="container">
-        <a href="http://103.13.206.43:2023/">
+        <a href="http://103.13.206.43:2023/" style="text-align: center;">
           <img src="https://i.ibb.co/xf06hKp/sketch-transparent.png" alt="Wara Wiri Travel" style="text-align: center;" width="100" />
         </a>
         <a class="navbar-brand" href="#"> <h1 style="color: black; text-align: center;">Tour & Travel Wara Wiri</h1></a>
