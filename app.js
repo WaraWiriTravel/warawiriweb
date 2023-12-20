@@ -447,7 +447,7 @@ app.post("/sendNewsletter", async (req, res) => {
       <div class="container">
         <div class="row">
           <div class="col-lg-6 col-md-6">
-            <h4 class="mb-4">PT Wara Wiri</h4>
+            <h4 class="mb-4">PT. HAMID JAYA ABADI</h4>
           </div>
           <div class="col-lg-6 col-md-6 text-end">
             <a href="http://103.13.206.43:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6" style="color: white;">Unsubcribe</a>
@@ -615,7 +615,7 @@ app.post("/sendNewsletter", async (req, res) => {
       <div class="container">
         <div class="row">
           <div class="col-lg-6 col-md-6">
-            <h4 class="mb-4">PT Wara Wiri</h4>
+            <h4 class="mb-4">PT. HAMID JAYA ABADI</h4>
           </div>
           <div class="col-lg-6 col-md-6 text-end">
             <a href="http://103.13.206.43:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6" style="color: white;">Unsubcribe</a>
@@ -776,7 +776,7 @@ app.post("/sendNewsletter", async (req, res) => {
       <div class="container">
         <div class="row">
           <div class="col-lg-6 col-md-6">
-            <h4 class="mb-4">PT Wara Wiri</h4>
+            <h4 class="mb-4">PT. HAMID JAYA ABADI</h4>
           </div>
           <div class="col-lg-6 col-md-6 text-end">
             <a href="http://103.13.206.43:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6" style="color: white;">Unsubcribe</a>
