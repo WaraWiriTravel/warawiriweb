@@ -430,7 +430,7 @@ app.post("/sendNewsletter", async (req, res) => {
             ${body}
           </pre>
           <div class="col mb-3">
-            <a class="bn39" href="${paketLink}"
+            <a class="bn39" href="${paketLink} style="color: white;"
               ><span class="bn39span">For More Info</span></a
             >
           </div>
@@ -450,7 +450,7 @@ app.post("/sendNewsletter", async (req, res) => {
             <h4 class="mb-4">PT Wara Wiri</h4>
           </div>
           <div class="col-lg-6 col-md-6 text-end">
-            <a href="http://103.13.206.43:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6">Unsubcribe</a>
+            <a href="http://103.13.206.43:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6" style="color: white;">Unsubcribe</a>
           </div>
         </div>
       </div>
@@ -598,7 +598,7 @@ app.post("/sendNewsletter", async (req, res) => {
             ${body}
           </pre>
           <div class="col mb-3">
-            <a class="bn39" href="${blogLink}"
+            <a class="bn39" href="${blogLink} style="color: white;"
               ><span class="bn39span">For More Info</span></a
             >
           </div>
@@ -618,7 +618,7 @@ app.post("/sendNewsletter", async (req, res) => {
             <h4 class="mb-4">PT Wara Wiri</h4>
           </div>
           <div class="col-lg-6 col-md-6 text-end">
-            <a href="http://103.13.206.43:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6">Unsubcribe</a>
+            <a href="http://103.13.206.43:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6" style="color: white;">Unsubcribe</a>
           </div>
         </div>
       </div>
@@ -779,7 +779,7 @@ app.post("/sendNewsletter", async (req, res) => {
             <h4 class="mb-4">PT Wara Wiri</h4>
           </div>
           <div class="col-lg-6 col-md-6 text-end">
-            <a href="http://103.13.206.43:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6">Unsubcribe</a>
+            <a href="http://103.13.206.43:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6" style="color: white;">Unsubcribe</a>
           </div>
         </div>
       </div>
