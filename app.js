@@ -331,6 +331,7 @@ app.post("/sendNewsletter", async (req, res) => {
     <style>
       pre {
         font-family: "Roboto", sans-serif;
+        color: black;
         white-space: pre-wrap;
       }
       a {
@@ -498,6 +499,7 @@ app.post("/sendNewsletter", async (req, res) => {
     <style>
       pre {
         font-family: "Roboto", sans-serif;
+        color: black;
         white-space: pre-wrap;
       }
       a {
@@ -662,6 +664,7 @@ app.post("/sendNewsletter", async (req, res) => {
     <style>
       pre {
         font-family: "Roboto", sans-serif;
+        color: black;
         white-space: pre-wrap;
       }
       a {
