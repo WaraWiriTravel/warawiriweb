@@ -488,6 +488,10 @@ app.post("/sendNewsletter", async (req, res) => {
     <title>News Letter</title>
 
     <style>
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
       .bn6 {
         cursor: pointer;
         outline: none;
