@@ -412,9 +412,9 @@ app.post("/sendNewsletter", async (req, res) => {
     >
       <div class="container">
         <a href="http://103.13.206.43:2023/">
-          <img src="https://i.ibb.co/xf06hKp/sketch-transparent.png" alt="Wara Wiri Travel" width="100" />
+          <img src="https://i.ibb.co/xf06hKp/sketch-transparent.png" alt="Wara Wiri Travel" style="text-align: center;" width="100" />
         </a>
-        <a class="navbar-brand" href="#"> <h1 style="color: black;">Tour & Travel Wara Wiri</h1></a>
+        <a class="navbar-brand" href="#"> <h1 style="color: black; text-align: center;">Tour & Travel Wara Wiri</h1></a>
       </div>
     </nav>
     <!-- End Navbar -->
@@ -422,7 +422,7 @@ app.post("/sendNewsletter", async (req, res) => {
     <section>
       <div class="container">
         <div class="row">
-          <div><h1 class="text-center">${subject}</h1></div>
+          <div><h1 class="text-center" style="text-align: center;">${subject}</h1></div>
         </div>
 
         <div class="row">
@@ -431,7 +431,7 @@ app.post("/sendNewsletter", async (req, res) => {
           </pre>
           <div class="col mb-3">
             <a class="bn39" href="${paketLink} style="color: white;"
-              ><span class="bn39span" style="color: white;">For More Info</span></a
+              ><span class="bn39span" style="color: white; text-align: center;">For More Info</span></a
             >
           </div>
         </div>
@@ -447,10 +447,10 @@ app.post("/sendNewsletter", async (req, res) => {
       <div class="container">
         <div class="row">
           <div class="col-lg-6 col-md-6">
-            <h4 class="mb-4">PT. HAMID JAYA ABADI</h4>
+            <h4 class="mb-4" style="text-align: center;">PT. HAMID JAYA ABADI</h4>
           </div>
           <div class="col-lg-6 col-md-6 text-end">
-            <a href="http://103.13.206.43:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6" style="color: white;">Unsubcribe</a>
+            <a href="http://103.13.206.43:2023/unsubscribe/${recipient.unsubscribeToken}" style="color: black;">Unsubcribe</a>
           </div>
         </div>
       </div>
@@ -580,9 +580,9 @@ app.post("/sendNewsletter", async (req, res) => {
     >
       <div class="container">
         <a href="http://103.13.206.43:2023/">
-          <img src="https://i.ibb.co/xf06hKp/sketch-transparent.png" alt="Wara Wiri Travel" width="100" />
+          <img src="https://i.ibb.co/xf06hKp/sketch-transparent.png" alt="Wara Wiri Travel" style="text-align: center;" width="100" />
         </a>
-        <a class="navbar-brand" href="#"> <h1 style="color: black;">Tour & Travel Wara Wiri</h1></a>
+        <a class="navbar-brand" href="#"> <h1 style="color: black; text-align: center;">Tour & Travel Wara Wiri</h1></a>
       </div>
     </nav>
     <!-- End Navbar -->
@@ -590,7 +590,7 @@ app.post("/sendNewsletter", async (req, res) => {
     <section>
       <div class="container">
         <div class="row">
-          <div><h1 class="text-center">${subject}</h1></div>
+          <div><h1 class="text-center" style="text-align: center;">${subject}</h1></div>
         </div>
 
         <div class="row">
@@ -599,7 +599,7 @@ app.post("/sendNewsletter", async (req, res) => {
           </pre>
           <div class="col mb-3">
             <a class="bn39" href="${blogLink} style="color: white;"
-              ><span class="bn39span" style="color: white;">For More Info</span></a
+              ><span class="bn39span" style="color: white; text-align: center;">For More Info</span></a
             >
           </div>
         </div>
@@ -615,10 +615,10 @@ app.post("/sendNewsletter", async (req, res) => {
       <div class="container">
         <div class="row">
           <div class="col-lg-6 col-md-6">
-            <h4 class="mb-4">PT. HAMID JAYA ABADI</h4>
+            <h4 class="mb-4" style="text-align: center;">PT. HAMID JAYA ABADI</h4>
           </div>
           <div class="col-lg-6 col-md-6 text-end">
-            <a href="http://103.13.206.43:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6" style="color: white;">Unsubcribe</a>
+            <a href="http://103.13.206.43:2023/unsubscribe/${recipient.unsubscribeToken}" style="color: black;">Unsubcribe</a>
           </div>
         </div>
       </div>
@@ -745,9 +745,9 @@ app.post("/sendNewsletter", async (req, res) => {
     >
       <div class="container">
         <a href="http://103.13.206.43:2023/">
-          <img src="https://i.ibb.co/xf06hKp/sketch-transparent.png" alt="Wara Wiri Travel" width="100" />
+          <img src="https://i.ibb.co/xf06hKp/sketch-transparent.png" alt="Wara Wiri Travel" style="text-align: center;" width="100" />
         </a>
-        <a class="navbar-brand" href="#"> <h1 style="color: black;">Tour & Travel Wara Wiri</h1></a>
+        <a class="navbar-brand" href="#"> <h1 style="color: black; text-align: center;">Tour & Travel Wara Wiri</h1></a>
       </div>
     </nav>
     <!-- End Navbar -->
@@ -755,7 +755,7 @@ app.post("/sendNewsletter", async (req, res) => {
     <section>
       <div class="container">
         <div class="row">
-          <div><h1 class="text-center">${subject}</h1></div>
+          <div><h1 class="text-center" style="text-align: center;">${subject}</h1></div>
         </div>
 
         <div class="row">
@@ -776,10 +776,10 @@ app.post("/sendNewsletter", async (req, res) => {
       <div class="container">
         <div class="row">
           <div class="col-lg-6 col-md-6">
-            <h4 class="mb-4">PT. HAMID JAYA ABADI</h4>
+            <h4 class="mb-4" style="text-align: center;">PT. HAMID JAYA ABADI</h4>
           </div>
           <div class="col-lg-6 col-md-6 text-end">
-            <a href="http://103.13.206.43:2023/unsubscribe/${recipient.unsubscribeToken}" class="bn6" style="color: white;">Unsubcribe</a>
+            <a href="http://103.13.206.43:2023/unsubscribe/${recipient.unsubscribeToken}" style="color: black;">Unsubcribe</a>
           </div>
         </div>
       </div>
