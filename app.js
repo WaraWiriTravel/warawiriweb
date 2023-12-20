@@ -414,7 +414,7 @@ app.post("/sendNewsletter", async (req, res) => {
         <a href="/">
           <img src="https://i.ibb.co/xf06hKp/sketch-transparent.png" alt="Wara Wiri Travel" width="100" />
         </a>
-        <a class="navbar-brand" href="#"> <h1>Tour & Travel Wara Wiri</h1></a>
+        <a class="navbar-brand" href="#"> <h1 style="color: black;">Tour & Travel Wara Wiri</h1></a>
       </div>
     </nav>
     <!-- End Navbar -->
@@ -422,7 +422,7 @@ app.post("/sendNewsletter", async (req, res) => {
     <section>
       <div class="container">
         <div class="row">
-          <div><h1 class="text-center">Judul</h1></div>
+          <div><h1 class="text-center">${subject}</h1></div>
         </div>
 
         <div class="row">
@@ -582,7 +582,7 @@ app.post("/sendNewsletter", async (req, res) => {
         <a href="/">
           <img src="https://i.ibb.co/xf06hKp/sketch-transparent.png" alt="Wara Wiri Travel" width="100" />
         </a>
-        <a class="navbar-brand" href="#"> <h1>Tour & Travel Wara Wiri</h1></a>
+        <a class="navbar-brand" href="#"> <h1 style="color: black;">Tour & Travel Wara Wiri</h1></a>
       </div>
     </nav>
     <!-- End Navbar -->
@@ -590,7 +590,7 @@ app.post("/sendNewsletter", async (req, res) => {
     <section>
       <div class="container">
         <div class="row">
-          <div><h1 class="text-center">Judul</h1></div>
+          <div><h1 class="text-center">${subject}</h1></div>
         </div>
 
         <div class="row">
@@ -747,7 +747,7 @@ app.post("/sendNewsletter", async (req, res) => {
         <a href="/">
           <img src="https://i.ibb.co/xf06hKp/sketch-transparent.png" alt="Wara Wiri Travel" width="100" />
         </a>
-        <a class="navbar-brand" href="#"> <h1>Tour & Travel Wara Wiri</h1></a>
+        <a class="navbar-brand" href="#"> <h1 style="color: black;">Tour & Travel Wara Wiri</h1></a>
       </div>
     </nav>
     <!-- End Navbar -->
@@ -755,7 +755,7 @@ app.post("/sendNewsletter", async (req, res) => {
     <section>
       <div class="container">
         <div class="row">
-          <div><h1 class="text-center">Judul</h1></div>
+          <div><h1 class="text-center">${subject}</h1></div>
         </div>
 
         <div class="row">
